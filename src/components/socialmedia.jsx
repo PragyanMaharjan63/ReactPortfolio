@@ -3,7 +3,7 @@ import { Github, Linkedin } from "lucide-react";
 export default function SocialMedia() {
   return (
     <>
-      <div className="flex flex-col fixed bottom-0 list-none m-15 gap-y-4">
+      <div className="flex flex-col fixed bottom-0 list-none m-7 sm:m-15 gap-y-4">
         <li
           onClick={() => {
             window.open("https://www.github.com/pragyanmaharjan63", "_blank");
