@@ -8,19 +8,20 @@ import Porjects from "./components/projects";
 function App() {
   const heroHref = useRef(null);
   const skillsHref = useRef(null);
+  const projectsHref = useRef(null);
 
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="flex  flex-col w-full">
-          <Navbar refs={{ heroHref, skillsHref }} />
+        <div className="flex  flex-col w-full h-svh">
+          <Navbar refs={{ heroHref, skillsHref, projectsHref }} />
           <section ref={heroHref}>
             <Hero />
           </section>
           <section ref={skillsHref}>
             <Skills />
           </section>
-          <section>
+          <section ref={projectsHref}>
             <Porjects />
           </section>
           <SocialMedia />
