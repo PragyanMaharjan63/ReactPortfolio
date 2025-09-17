@@ -2,21 +2,21 @@ export default function Porjects() {
   const projects = [
     {
       id: 1,
-      prev: "/public/penguin.png",
+      prev: "/penguin.png",
       title: "project title",
       desc: "this is a project",
       link: "https://github.com",
     },
     {
       id: 2,
-      prev: "/public/penguin.png",
+      prev: "/penguin.png",
       title: "project title",
       desc: "this is a project",
       link: "https://github.com",
     },
     {
       id: 3,
-      prev: "/public/penguin.png",
+      prev: "/penguin.png",
       title: "project title",
       desc: "this is a project",
       link: "https://github.com",
