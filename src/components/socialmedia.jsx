@@ -9,7 +9,7 @@ export default function SocialMedia() {
             window.open("https://www.github.com/pragyanmaharjan63", "_blank");
           }}
         >
-          <Github />
+          <Github className="cursor-pointer hover:scale-110 hover:rotate-3" />
         </li>
         <li
           onClick={() => {
@@ -19,7 +19,7 @@ export default function SocialMedia() {
             );
           }}
         >
-          <Linkedin />
+          <Linkedin className="cursor-pointer hover:scale-110 hover:rotate-3" />
         </li>
       </div>
     </>

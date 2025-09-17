@@ -12,11 +12,11 @@ export default function Skills() {
         style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
         className="flex 
         gap-y-4
-        flex-col items-center h-screen"
+        flex-col items-center mb-20"
       >
         {" "}
         <p className="text-3xl font-extrabold drop-shadow-xl drop-shadow-neutral-900/60 mt-30 mb-20">
-          MY SKILLS
+          SKILLS
         </p>
         <div className="flex justify-evenly grow flex-col sm:flex-row gap-y-10 w-full">
           {language.map((item) => {
