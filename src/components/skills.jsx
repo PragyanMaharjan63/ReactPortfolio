@@ -1,10 +1,10 @@
 export default function Skills() {
   const language = [
-    { id: 1, lang: "HTML", imag: "/public/icons/html.png" },
-    { id: 2, lang: "CSS", imag: "/public/icons/css-3.png" },
-    { id: 3, lang: "TailwindCSS", imag: "/public/icons/tailwind.svg" },
-    { id: 4, lang: "Javascript", imag: "/public/icons/js.png" },
-    { id: 5, lang: "React", imag: "/public/icons/react.svg" },
+    { id: 1, lang: "HTML", imag: "/icons/html.png" },
+    { id: 2, lang: "CSS", imag: "/icons/css-3.png" },
+    { id: 3, lang: "TailwindCSS", imag: "/icons/tailwind.svg" },
+    { id: 4, lang: "Javascript", imag: "/icons/js.png" },
+    { id: 5, lang: "React", imag: "/icons/react.svg" },
   ];
   return (
     <>
