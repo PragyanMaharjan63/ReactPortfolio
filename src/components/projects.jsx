@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 
 export default function Porjects() {
@@ -91,6 +92,20 @@ export default function Porjects() {
                   >
                     VIEW PREVIEW
                   </button>
+                </div>
+                <div className="absolute w-full translate-y-60">
+                  <ArrowLeft
+                    className="md:hidden absolute block left-0 cursor-pointer "
+                    onClick={() => {
+                      setActive(project.id - 1);
+                    }}
+                  />
+                  <ArrowRight
+                    className="md:hidden absolute block right-3 cursor-pointer "
+                    onClick={() => {
+                      setActive(project.id + 1);
+                    }}
+                  />
                 </div>
               </div>
             );
