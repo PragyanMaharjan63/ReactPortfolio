@@ -5,33 +5,50 @@ export default function Porjects() {
   const [projects, setProjects] = useState([
     {
       id: 1,
-      prev: "/penguin.png",
-      title: "PROJECT 1",
-      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio dicta necessitatibus ullam nam quaerat ipsa nobis assumenda ut doloremque recusandae delectus sequi aspernatur perspiciatis nisi sint vel eligendi similique reprehenderit officia, laborum omnis commodi blanditiis hic! Sequi quidem animi corrupti impedit ab sed.",
-      link: "https://github.com",
+      prev: "/projectImages/Bakas.png",
+      title: "BAKAS",
+      desc: "A ecommerce website ",
+      stack: ["HTML", "Tailwind CSS", "JS"],
+      link: "https://bakas-alpha.vercel.app/",
+      sourceCode: "https://github.com/PragyanMaharjan63/Bakas",
       isActive: true,
     },
     {
       id: 2,
-      prev: "/penguin.png",
-      title: "PROJECT 2",
-      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio dicta necessitatibus ullam nam quaerat ipsa nobis assumenda ut doloremque recusandae delectus sequi aspernatur perspiciatis nisi sint vel eligendi similique reprehenderit officia, laborum omnis commodi blanditiis hic! Sequi quidem animi corrupti impedit ab sed.",
-      link: "https://github.com",
+      prev: "/projectImages/studyTracker.png",
+      title: "Study Tracker",
+      desc: "A Timer app with Todo list",
+      stack: ["HTML", "Tailwind CSS", "JS", "React"],
+      link: "https://timer-using-react-iota.vercel.app/",
+      sourceCode: "https://github.com/PragyanMaharjan63/timer-Using-React",
       isActive: false,
     },
     {
       id: 3,
-      prev: "/penguin.png",
-      title: "PROJECT 3",
-      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio dicta necessitatibus ullam nam quaerat ipsa nobis assumenda ut doloremque recusandae delectus sequi aspernatur perspiciatis nisi sint vel eligendi similique reprehenderit officia, laborum omnis commodi blanditiis hic! Sequi quidem animi corrupti impedit ab sed.",
-      link: "https://github.com",
+      prev: "/projectImages/Coffee.png",
+      title: "Cafe",
+      desc: "A Coffee Cafe",
+      stack: ["HTML", "Tailwind CSS", "JS", "React"],
+      link: "https://react-landing-pages-eight.vercel.app/",
+      sourceCode:
+        "https://github.com/PragyanMaharjan63/React-Landing-pages/tree/main/coffee",
       isActive: false,
     },
   ]);
+
+  const activeProject = projects.find((p) => p.isActive);
+
   const setActive = (id) => {
+    let newId = id;
+
+    if (id < 1) {
+      newId = projects.length;
+    } else if (id > projects.length) {
+      newId = 1;
+    }
     setProjects((prev) =>
       prev.map((project) =>
-        project.id === id
+        project.id === newId
           ? { ...project, isActive: true }
           : { ...project, isActive: false }
       )
@@ -59,15 +76,15 @@ export default function Porjects() {
                 onClick={() => setActive(project.id)}
                 className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
                   project.isActive
-                    ? "scale-100 z-10 relative"
-                    : `absolute blur-sm ${translateClass} z-20`
+                    ? "scale-110 z-10 relative"
+                    : `absolute blur-sm ${translateClass} z-20 opacity-30`
                 }`}
               >
                 <div>
                   <img
                     src={project.prev}
                     alt="preview"
-                    className="size-80 justify-self-center"
+                    className="size-80 justify-self-center rounded-lg"
                   />
                 </div>
                 <div className=" flex flex-col items-center -translate-y-10 gap-y-2">
@@ -76,40 +93,68 @@ export default function Porjects() {
                   </p>
                   <p
                     className={` ${
-                      project.isActive ? "flex my-8 w-[70vw] " : "hidden"
+                      project.isActive ? " w-[70vw] text-center" : "hidden"
                     }`}
                   >
                     {project.desc}
                   </p>
-                  <button
-                    style={{ boxShadow: "6px 6px 6px rgba(0,0,0,0.5)" }}
-                    className={`bg-gradient-to-br from-[#2c2f36] to-[#111318] text-white font-light px-9 py-3 cursor-pointer text-sm ${
-                      project.isActive ? "flex " : "hidden"
-                    }`}
-                    onClick={() => {
-                      window.open(project.link);
-                    }}
+                  <div
+                    style={{ fontFamily: "'Inter','sans-serif'" }}
+                    className="flex gap-3 mt-4"
                   >
-                    VIEW PREVIEW
-                  </button>
-                </div>
-                <div className="absolute w-full translate-y-60">
-                  <ArrowLeft
-                    className="md:hidden absolute block left-0 cursor-pointer "
-                    onClick={() => {
-                      setActive(project.id - 1);
-                    }}
-                  />
-                  <ArrowRight
-                    className="md:hidden absolute block right-3 cursor-pointer "
-                    onClick={() => {
-                      setActive(project.id + 1);
-                    }}
-                  />
+                    {project.stack.map((language, idx) => (
+                      <div
+                        key={idx}
+                        className="inline-flex items-center justify-center bg-neutral-900 font-medium rounded-md py-1 px-3 text-sm ring-1 transition-colors"
+                      >
+                        {language}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-3 grow flex-wrap justify-center items-center my-6">
+                    <button
+                      style={{ fontFamily: "'Inter','sans-serif'" }}
+                      className={`inline-flex items-center justify-center bg-white  rounded-md text-black font-light ring-1 h-9 px-9 py-3 cursor-pointer text-sm ${
+                        project.isActive ? "flex " : "hidden"
+                      }`}
+                      onClick={() => {
+                        window.open(project.link);
+                      }}
+                    >
+                      View Preview
+                    </button>
+                    <button
+                      style={{ fontFamily: "'Inter','sans-serif'" }}
+                      className={`inline-flex items-center justify-center bg-neutral-900  rounded-md text-white font-light ring-1 h-9 px-9 py-3 cursor-pointer text-sm ${
+                        project.isActive ? "flex " : "hidden"
+                      }`}
+                      onClick={() => {
+                        window.open(project.sourceCode);
+                      }}
+                    >
+                      View Code
+                    </button>
+                  </div>
                 </div>
               </div>
             );
           })}
+          <div className="absolute w-full translate-y-96 sm:translate-y-60 z-30">
+            <ArrowLeft
+              className="absolute block left-0 cursor-pointer "
+              onClick={() => {
+                setActive(activeProject.id - 1);
+                console.log("clicked");
+              }}
+            />
+            <ArrowRight
+              className="absolute block right-3 cursor-pointer "
+              onClick={() => {
+                setActive(activeProject.id + 1);
+                console.log("clicked");
+              }}
+            />
+          </div>
         </div>
       </div>
     </>
