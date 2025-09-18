@@ -44,7 +44,8 @@ export default function Porjects() {
         className="flex flex-col gap-y-20 justify-center items-center my-20"
       >
         <h1 className="font-bold text-3xl">PROJECTS</h1>
-        <div className="flex relative justify-evenly w-full">
+
+        <div className="flex relative justify-evenly overflow-hidden sm:overflow-visible">
           {projects.map((project, index) => {
             const half = Math.ceil(projects.length / 2);
             const translateClass =
@@ -55,10 +56,10 @@ export default function Porjects() {
               <div
                 key={project.id}
                 onClick={() => setActive(project.id)}
-                className={`scale-75 transition-all absolute flex flex-col rounded-lg p-3 my-5  ${
+                className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
                   project.isActive
-                    ? "scale-100 z-10"
-                    : `blur-sm ${translateClass} z-20`
+                    ? "scale-100 z-10 relative"
+                    : `absolute blur-sm ${translateClass} z-20`
                 }`}
               >
                 <div>
