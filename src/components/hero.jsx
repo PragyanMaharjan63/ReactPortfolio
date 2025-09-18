@@ -9,13 +9,13 @@ export default function Hero() {
         gap-y-4
         flex-col justify-center items-center h-screen"
       >
-        <p className="font-thin text-sm -translate-x-10 sm:-translate-x-30">
+        <p className="font-light text-sm -translate-x-10 sm:-translate-x-30">
           HI, I AM
         </p>
         <div className="font-extrabold transition-all text-6xl  sm:text-9xl drop-shadow-2xl drop-shadow-neutral-900/60 ">
           PRAGYAN
         </div>
-        <p className="font-thin text-sm translate-x-10 sm:translate-x-40">
+        <p className="font-light text-sm translate-x-10 sm:translate-x-40">
           FRONT END DEVELOPER
         </p>
       </div>
