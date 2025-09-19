@@ -8,10 +8,10 @@ export default function Contact() {
 
   return (
     <>
-      <div className="flex flex-col justify-center relative items-center h-screen">
+      <div className="flex flex-col justify-center relative items-center h-screen mt-40 sm:mt-0">
         <div className="flex grow flex-wrap justify-center items-center gap-20">
-          <div className="flex flex-col w-sm sm:w-xl items-center justify-center gap-y-10">
-            <p className="font-bold text-2xl sm:text-3xl m-10">CONTACT ME</p>
+          <div className="flex flex-col w-80 sm:w-xl items-center justify-center gap-y-10">
+            <p className="font-bold text-2xl sm:text-3xl my-10">CONTACT ME</p>
             <p>
               Hey there! 👋 I'm Pragyan Maharjan, a curious and enthusiastic
               Computer Science student who thrives on learning something new
@@ -37,7 +37,7 @@ export default function Contact() {
                 style={{ boxShadow: "-5px 5px 10px black" }}
                 className="flex flex-col p-4 px-12 gap-y-4 justify-center"
               >
-                <p className="font-bold text-2xl sm:text-3xl m-10">
+                <p className="font-bold text-2xl sm:text-3xl m-3 sm:m-10">
                   CONTACT FORM
                 </p>
                 <input
@@ -93,7 +93,7 @@ export default function Contact() {
             </form>
           </div>
         </div>
-        <div className="rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
+        <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
           <ScrollWid bar={"top"} />
         </div>
         {state.succeeded && <Toast />}

@@ -77,7 +77,7 @@ export default function Porjects() {
                 onClick={() => setActive(project.id)}
                 className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
                   project.isActive
-                    ? "scale-110 z-10 relative"
+                    ? "scale-100 z-10 relative"
                     : `absolute blur-sm ${translateClass} z-20 opacity-30`
                 }`}
               >
@@ -94,7 +94,9 @@ export default function Porjects() {
                   </p>
                   <p
                     className={` ${
-                      project.isActive ? " w-[70vw] text-center" : "hidden"
+                      project.isActive
+                        ? "w-full sm:w-[70vw] text-center"
+                        : "hidden"
                     }`}
                   >
                     {project.desc}
@@ -157,7 +159,7 @@ export default function Porjects() {
             />
           </div>
         </div>
-        <div className="rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
+        <div className="hidden md:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
           <ScrollWid bar={"both"} />
         </div>
       </div>

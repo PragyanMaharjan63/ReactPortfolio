@@ -19,7 +19,7 @@ export default function Hero() {
           FRONT END DEVELOPER
         </p>
       </div>
-      <div className="rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
+      <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
         <ScrollWid bar={"bottom"} />{" "}
       </div>
     </>
