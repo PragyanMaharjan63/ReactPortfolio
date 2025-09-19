@@ -23,7 +23,7 @@ function App() {
           <section ref={skillsHref}>
             <Skills />
           </section>
-          <section ref={projectsHref} className="sm:scroll-mt-40">
+          <section ref={projectsHref} className="sm:scroll-mt-20">
             <Porjects />
           </section>
           <section ref={contactHref}>

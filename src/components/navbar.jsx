@@ -1,4 +1,8 @@
+import { motion } from "motion/react";
+
 export default function Navbar({ refs }) {
+  const initialAnim = { y: 30, opacity: 0, filter: "blur(10px)" };
+  const finalAnim = { y: 0, opacity: 1, filter: "blur(0px)" };
   const scrollToSection = (ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -8,7 +12,11 @@ export default function Navbar({ refs }) {
         style={{ fontFamily: "'Poppins','sans-serif'" }}
         className="flex justify-between w-full fixed p-5 sm:p-10 backdrop-blur-xl z-40"
       >
-        <div>
+        <motion.div
+          initial={initialAnim}
+          animate={finalAnim}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
           <img
             src="/penguin.png"
             alt="logo"
@@ -18,32 +26,41 @@ export default function Navbar({ refs }) {
               scrollToSection(refs.heroHref);
             }}
           />
-        </div>
+        </motion.div>
         <div className="flex gap-x-4 sm:gap-x-15 items-center list-none sm:mr-5">
-          <li
+          <motion.li
+            initial={initialAnim}
+            animate={finalAnim}
+            transition={{ duration: 0.4, delay: 0.2 }}
             className="hover:font-bold hover:cursor-pointer transition-all "
             onClick={() => {
               scrollToSection(refs.skillsHref);
             }}
           >
             SKILLS
-          </li>
-          <li
+          </motion.li>
+          <motion.li
+            initial={initialAnim}
+            animate={finalAnim}
+            transition={{ duration: 0.4, delay: 0.3 }}
             className="hover:font-bold hover:cursor-pointer transition-all "
             onClick={() => {
               scrollToSection(refs.projectsHref);
             }}
           >
             PROJECTS
-          </li>
-          <li
+          </motion.li>
+          <motion.li
+            initial={initialAnim}
+            animate={finalAnim}
+            transition={{ duration: 0.4, delay: 0.4 }}
             className="hover:font-bold hover:cursor-pointer transition-all"
             onClick={() => {
               scrollToSection(refs.contactHref);
             }}
           >
             CONTACT
-          </li>
+          </motion.li>
         </div>
       </div>
     </>
