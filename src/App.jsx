@@ -29,7 +29,9 @@ function App() {
           <section ref={contactHref}>
             <Contact />
           </section>
-          <SocialMedia />
+          <section className="hidden sm:block">
+            <SocialMedia />
+          </section>
         </div>
       </div>
     </>

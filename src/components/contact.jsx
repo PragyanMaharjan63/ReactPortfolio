@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import ScrollWid from "./scrollwidget";
 import { useForm, ValidationError } from "@formspree/react";
 import Toast from "./toast";
+import SocialMedia from "./socialmedia";
 
 export default function Contact() {
   const [state, handleSubmit] = useForm("meolyeok");
@@ -26,6 +27,9 @@ export default function Contact() {
             <div className="flex flex-col justify-center items-center">
               <p className="font-bold text-2xl">E-mail</p>
               <p>pragyanmaharjan6k@gmail.com</p>
+            </div>
+            <div className="block sm:hidden">
+              <SocialMedia />
             </div>
           </div>
           <div className="flex justify-center items-center">
