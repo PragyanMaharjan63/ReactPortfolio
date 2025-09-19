@@ -81,7 +81,7 @@ export default function Porjects() {
                     : `absolute blur-sm ${translateClass} z-20 opacity-30`
                 }`}
               >
-                <div>
+                <div className="flex justify-center">
                   <img
                     src={project.prev}
                     alt="preview"
