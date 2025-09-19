@@ -36,7 +36,12 @@ export default function Navbar({ refs }) {
           >
             PROJECTS
           </li>
-          <li className="hover:font-bold hover:cursor-pointer transition-all ">
+          <li
+            className="hover:font-bold hover:cursor-pointer transition-all"
+            onClick={() => {
+              scrollToSection(refs.contactHref);
+            }}
+          >
             CONTACT
           </li>
         </div>

@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import ScrollWid from "./scrollwidget";
 
 export default function Porjects() {
   const [projects, setProjects] = useState([
@@ -59,7 +60,7 @@ export default function Porjects() {
     <>
       <div
         style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
-        className="flex flex-col gap-y-20 justify-center items-center my-20"
+        className="flex flex-col relative gap-y-20 justify-center items-center my-20"
       >
         <h1 className="font-bold text-3xl">PROJECTS</h1>
 
@@ -155,6 +156,9 @@ export default function Porjects() {
               }}
             />
           </div>
+        </div>
+        <div className="rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
+          <ScrollWid bar={"both"} />
         </div>
       </div>
     </>
