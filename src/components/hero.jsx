@@ -34,7 +34,7 @@ export default function Hero() {
           transition={{ duration: 0.4, delay: 0.6 }}
           className="font-light text-sm translate-x-10 sm:translate-x-40"
         >
-          FRONT END DEVELOPER
+          FRONT END WEB DEVELOPER
         </motion.p>
       </div>
       <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
