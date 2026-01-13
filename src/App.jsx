@@ -15,7 +15,7 @@ function App() {
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="flex  flex-col w-full h-svh">
+        <div className="flex flex-col w-full h-svh">
           <Navbar refs={{ heroHref, skillsHref, projectsHref, contactHref }} />
           <section ref={heroHref}>
             <Hero />

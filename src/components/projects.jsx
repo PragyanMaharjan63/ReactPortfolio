@@ -103,7 +103,7 @@ export default function Porjects() {
                   <img
                     src={project.prev}
                     alt="preview"
-                    className="size-80 justify-self-center rounded-lg"
+                    className="size-60 sm:size-80 justify-self-center rounded-lg"
                   />
                 </div>
                 <div className=" flex flex-col items-center -translate-y-10 gap-y-2">
@@ -121,12 +121,12 @@ export default function Porjects() {
                   </p>
                   <div
                     style={{ fontFamily: "'Inter','sans-serif'" }}
-                    className="flex gap-3 mt-4"
+                    className="flex flex-wrap justify-center gap-3 mt-4 w-dvw"
                   >
                     {project.stack.map((language, idx) => (
                       <div
                         key={idx}
-                        className="inline-flex items-center justify-center bg-neutral-900 font-medium rounded-md py-1 px-3 text-sm ring-1 transition-colors"
+                        className="inline-flex items-center justify-center bg-neutral-900 font-medium rounded-md py-1 px-3 text-sm ring-1 transition-colors "
                       >
                         {language}
                       </div>
@@ -162,14 +162,14 @@ export default function Porjects() {
           })}
           <div className="absolute w-full translate-y-96 sm:translate-y-60 z-30">
             <ArrowLeft
-              className="absolute block left-0 cursor-pointer "
+              className="absolute block left-5 sm:left-0 cursor-pointer "
               onClick={() => {
                 setActive(activeProject.id - 1);
                 console.log("clicked");
               }}
             />
             <ArrowRight
-              className="absolute block right-3 cursor-pointer "
+              className="absolute block right-5 sm:right-3 cursor-pointer "
               onClick={() => {
                 setActive(activeProject.id + 1);
                 console.log("clicked");

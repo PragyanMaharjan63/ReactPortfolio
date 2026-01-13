@@ -14,7 +14,7 @@ export default function Skills() {
     <>
       <div
         style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
-        className="flex 
+        className="flex
         gap-y-4
         flex-col items-center mb-20"
       >

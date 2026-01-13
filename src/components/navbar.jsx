@@ -10,7 +10,7 @@ export default function Navbar({ refs }) {
     <>
       <div
         style={{ fontFamily: "'Poppins','sans-serif'" }}
-        className="flex justify-between w-full fixed p-5 sm:p-10 backdrop-blur-xl z-40"
+        className="flex justify-evenly sm:justify-between w-full fixed p-5 sm:p-10 backdrop-blur-xl z-40"
       >
         <motion.div
           initial={initialAnim}
