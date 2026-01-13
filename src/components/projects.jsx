@@ -78,7 +78,7 @@ export default function Porjects() {
     <>
       <div
         style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
-        className="flex flex-col relative gap-y-20 justify-center items-center my-20"
+        className="flex flex-col relative gap-y-20 justify-center items-center my-20 overflow-x-hidden"
       >
         <h1 className="font-bold text-3xl">PROJECTS</h1>
 
@@ -160,16 +160,16 @@ export default function Porjects() {
               </div>
             );
           })}
-          <div className="absolute w-full translate-y-70 sm:translate-y-60 z-30">
+          <div className="absolute flex justify-between sm:justify-evenly w-svw translate-y-70 sm:translate-y-60 z-30">
             <ArrowLeft
-              className="absolute block left-5 sm:left-0 cursor-pointer "
+              className=" block left-5 cursor-pointer "
               onClick={() => {
                 setActive(activeProject.id - 1);
                 console.log("clicked");
               }}
             />
             <ArrowRight
-              className="absolute block right-5 sm:right-3 cursor-pointer "
+              className=" block right-5 sm:right-3 cursor-pointer "
               onClick={() => {
                 setActive(activeProject.id + 1);
                 console.log("clicked");
