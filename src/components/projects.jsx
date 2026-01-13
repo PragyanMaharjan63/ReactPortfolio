@@ -160,7 +160,7 @@ export default function Porjects() {
               </div>
             );
           })}
-          <div className="absolute w-full translate-y-96 sm:translate-y-60 z-30">
+          <div className="absolute w-full translate-y-70 sm:translate-y-60 z-30">
             <ArrowLeft
               className="absolute block left-5 sm:left-0 cursor-pointer "
               onClick={() => {
