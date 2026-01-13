@@ -121,7 +121,7 @@ export default function Porjects() {
                   </p>
                   <div
                     style={{ fontFamily: "'Inter','sans-serif'" }}
-                    className="flex flex-wrap justify-center gap-3 mt-4 w-dvw"
+                    className="flex flex-wrap justify-center gap-3 mt-4 w-svw"
                   >
                     {project.stack.map((language, idx) => (
                       <div

@@ -24,7 +24,7 @@ export default function Hero() {
           initial={initialAnim}
           animate={finalAnim}
           transition={{ duration: 0.4, delay: 0.5 }}
-          className="font-extrabold transition-all text-4xl  sm:text-9xl drop-shadow-2xl drop-shadow-neutral-900/60 "
+          className="font-extrabold transition-all text-6xl  sm:text-9xl drop-shadow-2xl drop-shadow-neutral-900/60 "
         >
           PRAGYAN
         </motion.div>
