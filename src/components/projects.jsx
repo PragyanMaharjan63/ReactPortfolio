@@ -92,7 +92,7 @@ export default function Porjects() {
             return (
               <div
                 key={project.id}
-                onClick={() => setActive(project.id)}
+                // onClick={() => setActive(project.id)}
                 className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
                   project.isActive
                     ? "scale-100 z-10 relative"
