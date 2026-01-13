@@ -95,8 +95,8 @@ export default function Porjects() {
                 // onClick={() => setActive(project.id)}
                 className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
                   project.isActive
-                    ? "scale-100 z-10 relative"
-                    : `absolute blur-sm ${translateClass} z-20 opacity-30`
+                    ? "scale-100 z-20 relative"
+                    : `absolute blur-sm ${translateClass} z-10 opacity-30`
                 }`}
               >
                 <div className="flex justify-center">
