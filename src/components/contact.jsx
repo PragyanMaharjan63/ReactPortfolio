@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import ScrollWid from "./scrollwidget";
 import { useForm, ValidationError } from "@formspree/react";
@@ -6,6 +7,18 @@ import SocialMedia from "./socialmedia";
 
 export default function Contact() {
   const [state, handleSubmit] = useForm(import.meta.env.VITE_FORMSPREE_ID);
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (!state.succeeded) return;
+
+    setShowToast(true);
+    const timeoutId = setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [state.succeeded]);
 
   return (
     <>
@@ -100,7 +113,7 @@ export default function Contact() {
         <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
           <ScrollWid bar={"top"} />
         </div>
-        {state.succeeded && <Toast />}
+        {showToast && <Toast />}
       </div>
     </>
   );
