@@ -69,47 +69,37 @@ COPY public ./public
 COPY src ./src
 
 RUN if [ -z "$VITE_FORMSPREE_ID" ]; then \
-        echo "=====================================================================" >&2; \
-        echo " WARNING: VITE_FORMSPREE_ID was not passed to the build." >&2; \
-        echo " The site will build and serve, but the contact form cannot submit." >&2; \
-        echo " Pass it with: docker build --build-arg VITE_FORMSPREE_ID=<id> ." >&2; \
-        echo "=====================================================================" >&2; \
+    echo "=====================================================================" >&2; \
+    echo " WARNING: VITE_FORMSPREE_ID was not passed to the build." >&2; \
+    echo " The site will build and serve, but the contact form cannot submit." >&2; \
+    echo " Pass it with: docker build --build-arg VITE_FORMSPREE_ID=<id> ." >&2; \
+    echo "=====================================================================" >&2; \
     else \
-        echo "VITE_FORMSPREE_ID supplied — contact form enabled."; \
+    echo "VITE_FORMSPREE_ID supplied — contact form enabled."; \
     fi; \
     npm run build
 
-
 # ---------------------------------------------------------------------------
 # Stage 3 — runtime
-# Receives the compiled bundle and the server config only: no node_modules,
-# no sources, no toolchain, no package manager.
+# Caddy serves the compiled Vite bundle. No Node, source code, or node_modules.
 # ---------------------------------------------------------------------------
-FROM nginx:1.29-alpine AS runner
+FROM caddy:2-alpine AS runner
 
 ENV NODE_ENV=production
 
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /app/dist /srv
 
-# Drop the stock sample site, hand the served files to the unprivileged user
-# and fail the build early if the nginx config is invalid.
-#
-# `nginx -t` runs as root and leaves a root-owned pid file and temp dirs
-# behind. /tmp is sticky, so uid 101 could not replace them at runtime — they
-# must be removed in this same layer.
-RUN rm -rf /etc/nginx/conf.d /usr/share/nginx/html/50x.html \
-    && chown -R nginx:nginx /usr/share/nginx/html \
-    && nginx -t -c /etc/nginx/nginx.conf \
-    && rm -rf /tmp/nginx.pid /tmp/nginx-*
+# Port 9866 is non-privileged, so Caddy can run as its unprivileged user.
+RUN chown -R caddy:caddy /srv /config /data
 
-USER nginx
+USER caddy
 
-EXPOSE 8080
+EXPOSE 9866
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --spider http://127.0.0.1:8080/healthz || exit 1
+    CMD wget --quiet --spider http://127.0.0.1:9866/healthz || exit 1
 
-# Bypass the stock entrypoint scripts, which expect to run as root.
 ENTRYPOINT []
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

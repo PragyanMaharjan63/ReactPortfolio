@@ -109,31 +109,24 @@ pipeline {
     }
 
     environment {
-        APP_NAME           = 'react-portfolio'
-        IMAGE_NAME         = 'react-portfolio'
-        CONTAINER_NAME     = 'react-portfolio'
-        PREVIOUS_CONTAINER = 'react-portfolio-previous'
+    APP_NAME           = 'react-portfolio'
+    IMAGE_NAME         = 'react-portfolio'
+    CONTAINER_NAME     = 'react-portfolio'
+    PREVIOUS_CONTAINER = 'react-portfolio-previous'
 
-        // Host port published on the deploy server -> nginx inside the image.
-        HOST_PORT      = '8080'
-        CONTAINER_PORT = '8080'
+    HOST_PORT      = '9866'
+    CONTAINER_PORT = '9866'
 
-        HEALTH_URL     = "http://127.0.0.1:${HOST_PORT}/healthz"
-        HEALTH_RETRIES = '20'
-        HEALTH_DELAY   = '3'
+    HEALTH_URL     = "http://127.0.0.1:${HOST_PORT}/healthz"
+    HEALTH_RETRIES = '20'
+    HEALTH_DELAY   = '3'
 
-        ROLLBACK_TAG = 'rollback'
-        STABLE_TAG   = 'current'
+    ROLLBACK_TAG = 'rollback'
+    STABLE_TAG   = 'current'
 
-        // Jenkins "Secret file" credential holding this project's .env.
-        // The file is read on the agent only; it is never copied into the
-        // build context or the image (.dockerignore excludes all .env*).
-        // Only the VITE_* values the build needs are extracted from it.
-        ENV_CREDENTIAL_ID = 'pragyan-Portfolio-Env'
-
-        // Node image used for the optional lint stage; matches the Dockerfile.
-        NODE_IMAGE = 'node:22-alpine'
-    }
+    ENV_CREDENTIAL_ID = 'pragyan-Portfolio-Env'
+    NODE_IMAGE = 'node:22-alpine'
+}
 
     stages {
 
