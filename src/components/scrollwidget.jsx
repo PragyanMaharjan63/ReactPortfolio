@@ -1,28 +1,17 @@
-import { useEffect, useState } from "react";
-
 export default function ScrollWid({ bar }) {
-  const [top, setTop] = useState(false);
-  const [bottom, setBottom] = useState(false);
-  useEffect(() => {
-    if (bar === "top") {
-      setTop(true);
-    } else if (bar === "bottom") {
-      setBottom(true);
-    } else if (bar === "both") {
-      setTop(true);
-      setBottom(true);
-    } else {
-      setTop(false);
-      setBottom(false);
-    }
-  }, [bar]);
+  // Derived straight from the prop. The previous version mirrored `bar` into
+  // state via useEffect, which re-rendered a frame late for no benefit.
+  const top = bar === "top" || bar === "both";
+  const bottom = bar === "bottom" || bar === "both";
+
   return (
-    <>
-      <div className="flex items-center gap-x-6 text-neutral-600">
-        {top && <span className="border-neutral-600 border-1 w-15 h-0" />}{" "}
-        <div style={{ fontFamily: "'Poppins','sans-serif'" }}>SCROLL</div>
-        {bottom && <span className="border-neutral-600 border-1 w-15 h-0" />}
-      </div>
-    </>
+    <div
+      aria-hidden="true"
+      className="flex items-center gap-x-6 text-ink-faint select-none"
+    >
+      {top && <span className="h-px w-14 bg-current" />}
+      <span className="text-xs tracking-[0.3em]">SCROLL</span>
+      {bottom && <span className="h-px w-14 bg-current" />}
+    </div>
   );
 }

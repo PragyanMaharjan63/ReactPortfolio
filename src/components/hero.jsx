@@ -4,41 +4,42 @@ import { motion } from "motion/react";
 export default function Hero() {
   const initialAnim = { y: 30, opacity: 0, filter: "blur(10px)" };
   const finalAnim = { y: 0, opacity: 1, filter: "blur(0px)" };
+
   return (
     <>
-      <div
-        style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
-        className="flex 
-        gap-y-4
-        flex-col justify-center items-center h-screen"
-      >
+      <div className="flex h-screen flex-col items-center justify-center gap-y-5 px-5 font-display">
         <motion.p
           initial={initialAnim}
           animate={finalAnim}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="font-light text-sm -translate-x-10 sm:-translate-x-30"
+          className="hero-label sm:-translate-x-30"
         >
           HI, I AM
         </motion.p>
-        <motion.div
+
+        <motion.h1
           initial={initialAnim}
           animate={finalAnim}
           transition={{ duration: 0.4, delay: 0.5 }}
-          className="font-extrabold transition-all text-6xl  sm:text-9xl drop-shadow-2xl drop-shadow-neutral-900/60 "
+          className="text-center text-6xl leading-none font-extrabold
+                     tracking-tight text-white drop-shadow-2xl
+                     drop-shadow-black/50 sm:text-8xl lg:text-9xl"
         >
           PRAGYAN
-        </motion.div>
+        </motion.h1>
+
         <motion.p
           initial={initialAnim}
           animate={finalAnim}
           transition={{ duration: 0.4, delay: 0.6 }}
-          className="font-light text-sm translate-x-10 sm:translate-x-40"
+          className="hero-label text-center sm:translate-x-40"
         >
           FRONT END WEB DEVELOPER
         </motion.p>
       </div>
-      <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
-        <ScrollWid bar={"bottom"} />{" "}
+
+      <div className="absolute right-0 -bottom-30 hidden rotate-90 sm:flex lg:bottom-30">
+        <ScrollWid bar={"bottom"} />
       </div>
     </>
   );

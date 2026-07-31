@@ -15,7 +15,10 @@ function App() {
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="flex flex-col w-full h-svh">
+        {/* No fixed height here: the wrapper previously had `h-svh`, which
+            pinned the whole page to one viewport while its children
+            overflowed out of it. */}
+        <div className="flex flex-col w-full">
           <Navbar refs={{ heroHref, skillsHref, projectsHref, contactHref }} />
           <section ref={heroHref}>
             <Hero />

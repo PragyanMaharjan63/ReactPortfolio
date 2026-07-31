@@ -75,112 +75,103 @@ export default function Porjects() {
   };
 
   return (
-    <>
-      <div
-        style={{ fontFamily: "'Lexend Deca', 'sans-serif'" }}
-        className="flex flex-col relative gap-y-20 justify-center items-center my-20 overflow-x-hidden"
-      >
-        <h1 className="font-bold text-3xl">PROJECTS</h1>
+    <div className="relative flex flex-col items-center px-5 py-24 font-display sm:py-28">
+      <h2 className="section-title mb-14">PROJECTS</h2>
 
-        <div className="flex relative justify-evenly overflow-hidden sm:overflow-visible">
-          {projects.map((project, index) => {
-            const half = Math.ceil(projects.length / 2);
-            const translateClass =
-              index < half
-                ? "-translate-x-60 -rotate-6"
-                : "translate-x-60 rotate-6";
-            return (
-              <div
-                key={project.id}
-                // onClick={() => setActive(project.id)}
-                className={`scale-75 transition-all flex flex-col rounded-lg p-3 my-5  ${
-                  project.isActive
-                    ? "scale-100 z-20 relative"
-                    : `absolute blur-sm ${translateClass} z-10 opacity-30`
-                }`}
-              >
-                <div className="flex justify-center">
-                  <img
-                    src={project.prev}
-                    alt="preview"
-                    className="size-60 sm:size-80 justify-self-center rounded-lg"
-                  />
-                </div>
-                <div className=" flex flex-col items-center -translate-y-10 gap-y-2">
-                  <p className="font-extrabold text-4xl drop-shadow-xl p-3 drop-shadow-black">
-                    {project.title}
-                  </p>
-                  <p
-                    className={` ${
-                      project.isActive
-                        ? "w-full sm:w-[70vw] text-center"
-                        : "hidden"
-                    }`}
-                  >
-                    {project.desc}
-                  </p>
-                  <div
-                    style={{ fontFamily: "'Inter','sans-serif'" }}
-                    className="flex flex-wrap justify-center gap-3 mt-4 w-svw"
-                  >
-                    {project.stack.map((language, idx) => (
-                      <div
-                        key={idx}
-                        className="inline-flex items-center justify-center bg-neutral-900 font-medium rounded-md py-1 px-3 text-sm ring-1 transition-colors "
-                      >
-                        {language}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-3 grow flex-wrap justify-center items-center my-6">
-                    <button
-                      style={{ fontFamily: "'Inter','sans-serif'" }}
-                      className={`inline-flex items-center justify-center bg-white  rounded-md text-black font-light ring-1 h-9 px-9 py-3 cursor-pointer text-sm ${
-                        project.isActive ? "flex " : "hidden"
-                      }`}
-                      onClick={() => {
-                        window.open(project.link);
-                      }}
-                    >
-                      View Preview
-                    </button>
-                    <button
-                      style={{ fontFamily: "'Inter','sans-serif'" }}
-                      className={`inline-flex items-center justify-center bg-neutral-900  rounded-md text-white font-light ring-1 h-9 px-9 py-3 cursor-pointer text-sm ${
-                        project.isActive ? "flex " : "hidden"
-                      }`}
-                      onClick={() => {
-                        window.open(project.sourceCode);
-                      }}
-                    >
-                      View Code
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          <div className="absolute flex justify-between sm:justify-evenly w-svw translate-y-70 sm:translate-y-60 z-30">
-            <ArrowLeft
-              className=" block left-5 cursor-pointer "
-              onClick={() => {
-                setActive(activeProject.id - 1);
-                console.log("clicked");
-              }}
-            />
-            <ArrowRight
-              className=" block right-5 sm:right-3 cursor-pointer "
-              onClick={() => {
-                setActive(activeProject.id + 1);
-                console.log("clicked");
-              }}
-            />
-          </div>
-        </div>
-        <div className="hidden md:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
-          <ScrollWid bar={"both"} />
+      {/* Stage for the stacked cards. Clipped so the blurred neighbours
+          cannot bleed past the section or push the page sideways. */}
+      <div className="relative flex w-full max-w-3xl justify-center overflow-hidden py-4">
+        {projects.map((project, index) => {
+          const half = Math.ceil(projects.length / 2);
+          const translateClass =
+            index < half ? "-translate-x-60 -rotate-6" : "translate-x-60 rotate-6";
+
+          return (
+            <div
+              key={project.id}
+              aria-hidden={!project.isActive}
+              className={`flex scale-75 flex-col transition-all duration-500 ease-out ${
+                project.isActive
+                  ? "relative z-20 scale-100"
+                  : `absolute z-10 blur-sm ${translateClass} opacity-25`
+              }`}
+            >
+              <img
+                src={project.prev}
+                alt={`${project.title} preview`}
+                loading="lazy"
+                decoding="async"
+                className="size-64 rounded-xl object-cover ring-1 ring-line
+                           shadow-2xl shadow-black/50 sm:size-80"
+              />
+            </div>
+          );
+        })}
+
+        {/* Arrows sit level with the middle of the artwork. */}
+        <div className="pointer-events-none absolute inset-x-0 top-1/2 z-30 flex -translate-y-1/2 justify-between px-1 sm:px-2">
+          <button
+            type="button"
+            aria-label="Previous project"
+            className="btn-round pointer-events-auto"
+            onClick={() => setActive(activeProject.id - 1)}
+          >
+            <ArrowLeft className="size-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next project"
+            className="btn-round pointer-events-auto"
+            onClick={() => setActive(activeProject.id + 1)}
+          >
+            <ArrowRight className="size-5" aria-hidden="true" />
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Details for the active project, below the artwork rather than
+          overlapping it. */}
+      <div
+        key={activeProject.id}
+        className="mt-10 flex w-full max-w-2xl flex-col items-center gap-y-4 text-center"
+      >
+        <h3 className="text-3xl font-extrabold text-white drop-shadow-lg drop-shadow-black/50 sm:text-4xl">
+          {activeProject.title}
+        </h3>
+
+        <p className="text-ink-muted">{activeProject.desc}</p>
+
+        <ul className="mt-1 flex list-none flex-wrap justify-center gap-2">
+          {activeProject.stack.map((language) => (
+            <li key={language} className="tag">
+              {language}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-3 flex flex-wrap justify-center gap-3">
+          <a
+            href={activeProject.link}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="btn btn-primary"
+          >
+            View Preview
+          </a>
+          <a
+            href={activeProject.sourceCode}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="btn btn-secondary"
+          >
+            View Code
+          </a>
+        </div>
+      </div>
+
+      <div className="absolute right-0 -bottom-30 hidden rotate-90 md:flex lg:bottom-30">
+        <ScrollWid bar={"both"} />
+      </div>
+    </div>
   );
 }

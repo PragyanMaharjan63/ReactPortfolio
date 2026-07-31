@@ -1,0 +1,64 @@
+# Dependencies — reinstalled inside the image from the lockfile
+node_modules
+**/node_modules
+
+# Build output — regenerated inside the image
+dist
+dist-ssr
+build
+
+# Framework / tooling caches
+.vite
+.cache
+.parcel-cache
+.eslintcache
+*.tsbuildinfo
+
+# Version control
+.git
+.gitignore
+.gitattributes
+.github
+
+# Docker & CI artifacts (not needed inside the build context)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+docker-compose*.yaml
+Jenkinsfile
+
+# Editor / OS files
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Test / coverage output
+coverage
+.nyc_output
+
+# Local env files are deliberately kept OUT of the build context.
+# src/components/contact.jsx needs VITE_FORMSPREE_ID at build time, but it is
+# supplied with `docker build --build-arg VITE_FORMSPREE_ID=...`, never by
+# copying a .env file into the image.
+*.local
+.env
+.env.*
+
+# Lint config: the image build does not lint, so it is not part of the
+# context. CI lints separately (see the Lint stage in the Jenkinsfile).
+eslint.config.js
+
+# Docs
+README.md

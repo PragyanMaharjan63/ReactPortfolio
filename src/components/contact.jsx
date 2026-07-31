@@ -5,8 +5,14 @@ import { useForm, ValidationError } from "@formspree/react";
 import Toast from "./toast";
 import SocialMedia from "./socialmedia";
 
+// Vite inlines this at build time. When it is missing it is `undefined`, and
+// useForm() throws on an empty id — which unmounts the entire app and renders
+// a blank page. Keep that failure inside the form instead.
+const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID;
+
 export default function Contact() {
-  const [state, handleSubmit] = useForm(import.meta.env.VITE_FORMSPREE_ID);
+  const formReady = Boolean(FORMSPREE_ID);
+  const [state, handleSubmit] = useForm(FORMSPREE_ID || "form-not-configured");
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -21,100 +27,145 @@ export default function Contact() {
   }, [state.succeeded]);
 
   return (
-    <>
-      <div className="flex flex-col justify-center relative items-center h-screen mt-40 sm:mt-0">
-        <div className="flex grow flex-wrap justify-center items-center gap-20">
-          <div className="flex flex-col w-80 sm:w-xl items-center justify-center gap-y-10">
-            <p className="font-bold text-2xl sm:text-3xl my-10">CONTACT ME</p>
-            <p>
-              Hey there! 👋 I'm Pragyan Maharjan, a curious and enthusiastic
-              Computer Science student who thrives on learning something new
-              every day. From coding and web development to problem-solving, I'm
-              always eager to explore and expand my knowledge. Let's build
-              something amazing together!
-            </p>
-            <div className="flex flex-col justify-center items-center">
-              <p className="font-bold text-2xl">Address</p>
-              <p>Sunakothi, Lalitpur, Nepal</p>
-            </div>
-            <div className="flex flex-col justify-center items-center">
-              <p className="font-bold text-2xl">E-mail</p>
-              <p>pragyanmaharjan6k@gmail.com</p>
-            </div>
-            <div className="block sm:hidden">
-              <SocialMedia />
-            </div>
+    <div className="relative flex flex-col items-center justify-center px-5 py-24 sm:py-28">
+      <div className="flex w-full max-w-6xl flex-wrap items-start justify-center gap-x-16 gap-y-14">
+        <div className="flex w-full max-w-md flex-col items-center gap-y-8 text-center">
+          <h2 className="section-title">CONTACT ME</h2>
+
+          <p className="text-ink-muted">
+            Hey there! 👋 I&apos;m Pragyan Maharjan, a curious and enthusiastic
+            Computer Science student who thrives on learning something new every
+            day. From coding and web development to problem-solving, I&apos;m
+            always eager to explore and expand my knowledge. Let&apos;s build
+            something amazing together!
+          </p>
+
+          <div className="flex flex-col items-center gap-y-1">
+            <p className="font-display text-lg font-bold text-white">Address</p>
+            <p className="text-ink-muted">Sunakothi, Lalitpur, Nepal</p>
           </div>
-          <div className="flex justify-center items-center">
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-4 max-w-md mx-auto p-4 rounded-md  md:w-[40vw]"
+
+          <div className="flex flex-col items-center gap-y-1">
+            <p className="font-display text-lg font-bold text-white">E-mail</p>
+            <a
+              href="mailto:pragyanmaharjan6k@gmail.com"
+              className="inline-flex min-h-11 items-center text-ink-muted underline-offset-4 transition-colors hover:text-white hover:underline"
             >
-              <div
-                style={{ boxShadow: "-5px 5px 10px black" }}
-                className="flex flex-col p-4 px-12 gap-y-4 justify-center"
-              >
-                <p className="font-bold text-2xl sm:text-3xl m-3 sm:m-10">
-                  CONTACT FORM
-                </p>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  placeholder="Name"
-                  className="border-b border-gray-400 outline-none p-2"
-                />
+              pragyanmaharjan6k@gmail.com
+            </a>
+          </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="Email"
-                  className="border-b border-gray-400 outline-none p-2"
-                />
-                <ValidationError
-                  prefix="Email"
-                  field="email"
-                  errors={state.errors}
-                />
-
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  className="border-b border-gray-400 outline-none p-2"
-                />
-
-                <textarea
-                  name="message"
-                  placeholder="Message"
-                  rows="4"
-                  className="border-b border-gray-400 outline-none p-2 resize-none"
-                ></textarea>
-                <ValidationError
-                  prefix="Message"
-                  field="message"
-                  errors={state.errors}
-                />
-                <div className="w-full inline-flex justify-center p-4">
-                  <button
-                    type="submit"
-                    disabled={state.submitting}
-                    className="flex m-4 ring-1 hover:ring-2 bg-white text-neutral-950 rounded-md transition-colors px-3 w-max py-1"
-                  >
-                    Send message
-                    {<ArrowRight className="ml-2" />}
-                  </button>
-                </div>
-              </div>
-            </form>
+          <div className="block sm:hidden">
+            <SocialMedia />
           </div>
         </div>
-        <div className="hidden sm:flex rotate-90 absolute -bottom-30 lg:bottom-30 -right-20 lg:right-0">
-          <ScrollWid bar={"top"} />
-        </div>
-        {showToast && <Toast />}
+
+        <form
+          onSubmit={formReady ? handleSubmit : (e) => e.preventDefault()}
+          className="flex w-full max-w-md flex-col gap-y-5 rounded-2xl
+                     border border-line bg-surface/60 p-7 shadow-2xl
+                     shadow-black/40 sm:p-9"
+        >
+          <p className="mb-1 text-center font-display text-2xl font-bold tracking-wide text-white">
+            CONTACT FORM
+          </p>
+
+          <div className="flex flex-col gap-y-1.5">
+            <label htmlFor="contact-name" className="text-sm text-ink-muted">
+              Name
+            </label>
+            <input
+              id="contact-name"
+              type="text"
+              name="name"
+              required
+              autoComplete="name"
+              placeholder="Your name"
+              className="field"
+            />
+          </div>
+
+          <div className="flex flex-col gap-y-1.5">
+            <label htmlFor="contact-email" className="text-sm text-ink-muted">
+              Email
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              placeholder="you@example.com"
+              className="field"
+            />
+            <ValidationError
+              prefix="Email"
+              field="email"
+              errors={state.errors}
+              className="text-sm text-red-400"
+            />
+          </div>
+
+          <div className="flex flex-col gap-y-1.5">
+            <label htmlFor="contact-phone" className="text-sm text-ink-muted">
+              Phone Number
+            </label>
+            <input
+              id="contact-phone"
+              type="tel"
+              name="phone"
+              autoComplete="tel"
+              placeholder="Optional"
+              className="field"
+            />
+          </div>
+
+          <div className="flex flex-col gap-y-1.5">
+            <label htmlFor="contact-message" className="text-sm text-ink-muted">
+              Message
+            </label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="4"
+              required
+              placeholder="Your message"
+              className="field resize-none"
+            ></textarea>
+            <ValidationError
+              prefix="Message"
+              field="message"
+              errors={state.errors}
+              className="text-sm text-red-400"
+            />
+          </div>
+
+          {!formReady && (
+            <p className="text-sm text-amber-400">
+              The form is not configured. Email me directly at{" "}
+              <a className="underline" href="mailto:pragyanmaharjan6k@gmail.com">
+                pragyanmaharjan6k@gmail.com
+              </a>
+              .
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={state.submitting || !formReady}
+            className="btn btn-primary mt-2 self-center"
+          >
+            {state.submitting ? "Sending..." : "Send message"}
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </button>
+        </form>
       </div>
-    </>
+
+      <div className="absolute right-0 -bottom-30 hidden rotate-90 sm:flex lg:bottom-30">
+        <ScrollWid bar={"top"} />
+      </div>
+
+      {showToast && <Toast />}
+    </div>
   );
 }
