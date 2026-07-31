@@ -7,13 +7,13 @@
 #
 #   ./package.json          ./index.html         ./vite.config.js
 #   ./package-lock.json     ./eslint.config.js
-#   ./docker/nginx.conf     <- runtime web server config
+#   ./Caddyfile             <- runtime web server config
 #   ./public/               <- static assets copied verbatim (penguin.png,
 #                              icons/, projectImages/)
 #   ./src/                  <- main.jsx, App.jsx, index.css, components/
 #
 # `npm run build` emits a folder of static files, so the runtime stage is a
-# web server, not Node. node:alpine builds; nginx:alpine serves.
+# web server, not Node. node:alpine builds; caddy:alpine serves on port 9866.
 #
 # ---------------------------------------------------------------------------
 # Build-time configuration
@@ -90,13 +90,21 @@ ENV NODE_ENV=production
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/dist /srv
 
-# Port 9866 is non-privileged, so Caddy can run as its unprivileged user.
-RUN chown -R caddy:caddy /srv /config /data
+# The official caddy image runs as root and ships no `caddy` account, so the
+# unprivileged user has to be created here before it can be switched to.
+# Port 9866 is non-privileged, so no capability to bind low ports is needed.
+# Caddy writes to $XDG_CONFIG_HOME (/config) and $XDG_DATA_HOME (/data), so
+# both must belong to that user.
+RUN addgroup -g 10001 -S caddy \
+    && adduser -u 10001 -S -D -H -G caddy caddy \
+    && chown -R caddy:caddy /srv /config /data \
+    && caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 
 USER caddy
 
 EXPOSE 9866
 
+# busybox wget: --spider makes a HEAD-style request and sets the exit code.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --quiet --spider http://127.0.0.1:9866/healthz || exit 1
 

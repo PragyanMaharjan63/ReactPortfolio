@@ -5,7 +5,7 @@
 //
 //   ./package.json  ./package-lock.json  ./index.html  ./vite.config.js
 //   ./eslint.config.js
-//   ./Dockerfile    ./.dockerignore      ./docker/nginx.conf
+//   ./Dockerfile    ./.dockerignore      ./Caddyfile
 //   ./public/       (penguin.png, icons/, projectImages/)
 //   ./src/          (main.jsx, App.jsx, index.css, components/)
 //
@@ -172,7 +172,7 @@ pipeline {
 
                     # Files the Docker build reads, in the layout it expects.
                     for f in package.json package-lock.json index.html vite.config.js \
-                             Dockerfile .dockerignore docker/nginx.conf \
+                             Dockerfile .dockerignore Caddyfile \
                              src/main.jsx src/App.jsx src/index.css; do
                         if [ ! -f "$f" ]; then
                             echo "ERROR: required file missing: $f" >&2
