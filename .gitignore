@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 
 .env
+# Build output
+client/dist
+server/dist
+
+# Env
+.env
+.env.local
+*.tsbuildinfo

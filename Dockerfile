@@ -1,113 +1,89 @@
 # syntax=docker/dockerfile:1
 
 # ---------------------------------------------------------------------------
-# Vite + React portfolio.
+# MERN portfolio — npm workspaces monorepo.
 #
-# Repository layout this file is written against:
+#   client/   Vite + React + TypeScript SPA  -> static bundle
+#   server/   Express + Mongoose API         -> serves the API and the bundle
+#   scripts/  content sync (client data -> server bundled fallback)
 #
-#   ./package.json          ./index.html         ./vite.config.js
-#   ./package-lock.json     ./eslint.config.js
-#   ./Caddyfile             <- runtime web server config
-#   ./public/               <- static assets copied verbatim (penguin.png,
-#                              icons/, projectImages/)
-#   ./src/                  <- main.jsx, App.jsx, index.css, components/
+# The runtime is Node: Express serves /api, the static build, and injects
+# per-route metadata into index.html. Mongo is optional — without MONGODB_URI
+# the API serves the bundled project content and the site is fully functional.
 #
-# `npm run build` emits a folder of static files, so the runtime stage is a
-# web server, not Node. node:alpine builds; caddy:alpine serves on port 9866.
-#
-# ---------------------------------------------------------------------------
-# Build-time configuration
-#
-# src/components/contact.jsx reads `import.meta.env.VITE_FORMSPREE_ID`. Vite
-# inlines that value into the JS bundle **at build time**, so it cannot be
-# supplied when the container starts — it must be passed to `docker build`:
-#
-#   docker build --build-arg VITE_FORMSPREE_ID=<your-form-id> -t portfolio .
-#
-# No default is invented here. If it is omitted the site still builds and
-# serves; only the contact form is inert, and the build says so loudly.
-# No .env file is created, read, or copied.
+# Build:  docker build -t portfolio .
+# Run:    docker run -p 6767:3000 portfolio
 # ---------------------------------------------------------------------------
 
 
-# ---------------------------------------------------------------------------
-# Stage 1 — dependencies
-# Manifests are copied alone so this layer is reused whenever only source
-# code changed.
-# ---------------------------------------------------------------------------
-FROM node:22-alpine AS deps
-
+# --- base -------------------------------------------------------------------
+FROM node:22-alpine AS base
 WORKDIR /app
+ENV NPM_CONFIG_FUND=false \
+    NPM_CONFIG_AUDIT=false
+# dumb-init reaps zombies and forwards signals, so the container stops cleanly.
+RUN apk add --no-cache dumb-init
 
+
+# --- deps -------------------------------------------------------------------
+# Manifests only, so this layer is reused whenever just source code changed.
+FROM base AS deps
 COPY package.json package-lock.json ./
-
-# package-lock.json is present, so npm is the package manager and `npm ci`
-# installs exactly what the lockfile pins. devDependencies are required:
-# vite and @vitejs/plugin-react-swc are what perform the build.
+COPY client/package.json ./client/
+COPY server/package.json ./server/
+# Fails loudly rather than silently falling back to a non-deterministic install.
+RUN test -f package-lock.json || (echo "ERROR: package-lock.json is required for npm ci" >&2 && exit 1)
 RUN npm ci --include=dev
 
 
-# ---------------------------------------------------------------------------
-# Stage 2 — build
-# ---------------------------------------------------------------------------
-FROM node:22-alpine AS build
+# --- builder ----------------------------------------------------------------
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+COPY client ./client
+COPY server ./server
+COPY scripts ./scripts
+ENV NODE_ENV=production
+RUN npm run build -w client && npm run build -w server
 
-ARG VITE_FORMSPREE_ID=""
+
+# --- prod-deps --------------------------------------------------------------
+# A second, clean install with devDependencies omitted. Building and running
+# from the same tree would drag the whole toolchain into the runtime image.
+FROM base AS prod-deps
+COPY package.json package-lock.json ./
+COPY client/package.json ./client/
+COPY server/package.json ./server/
+# Scoped to the server workspace on purpose. The client's runtime dependencies
+# (three, drei, framer-motion, lucide) are already compiled into the static
+# bundle — installing them here added ~200 MB of dead weight to the image.
+RUN npm ci --omit=dev --workspace server --include-workspace-root \
+    && npm cache clean --force
+
+
+# --- runner -----------------------------------------------------------------
+FROM base AS runner
 
 ENV NODE_ENV=production \
-    VITE_FORMSPREE_ID=${VITE_FORMSPREE_ID}
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    CLIENT_DIR=/app/client/dist
 
-WORKDIR /app
+# Only what the process needs at runtime: production dependencies, the compiled
+# server, and the static bundle. No source, no toolchain, no dev dependencies.
+COPY --from=prod-deps --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder   --chown=node:node /app/server/dist ./server/dist
+COPY --from=builder   --chown=node:node /app/client/dist ./client/dist
+COPY --chown=node:node package.json ./
+COPY --chown=node:node server/package.json ./server/
 
-COPY --from=deps /app/node_modules ./node_modules
+# node:alpine ships an unprivileged `node` user (uid 1000).
+USER node
 
-# Only what `vite build` actually reads. eslint.config.js is deliberately
-# excluded — linting is a CI step, not part of producing the bundle.
-COPY package.json package-lock.json ./
-COPY vite.config.js index.html ./
-COPY public ./public
-COPY src ./src
+EXPOSE 3000
 
-RUN if [ -z "$VITE_FORMSPREE_ID" ]; then \
-    echo "=====================================================================" >&2; \
-    echo " WARNING: VITE_FORMSPREE_ID was not passed to the build." >&2; \
-    echo " The site will build and serve, but the contact form cannot submit." >&2; \
-    echo " Pass it with: docker build --build-arg VITE_FORMSPREE_ID=<id> ." >&2; \
-    echo "=====================================================================" >&2; \
-    else \
-    echo "VITE_FORMSPREE_ID supplied — contact form enabled."; \
-    fi; \
-    npm run build
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --quiet --spider http://127.0.0.1:3000/api/health || exit 1
 
-# ---------------------------------------------------------------------------
-# Stage 3 — runtime
-# Caddy serves the compiled Vite bundle. No Node, source code, or node_modules.
-# ---------------------------------------------------------------------------
-FROM caddy:2-alpine AS runner
-
-ENV NODE_ENV=production
-
-COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /app/dist /srv
-
-# The official caddy image runs as root and ships no `caddy` account, so the
-# unprivileged user has to be created here before it can be switched to.
-# Port 9866 is non-privileged, so no capability to bind low ports is needed.
-# Caddy writes to $XDG_CONFIG_HOME (/config) and $XDG_DATA_HOME (/data), so
-# both must belong to that user.
-RUN addgroup -g 10001 -S caddy \
-    && adduser -u 10001 -S -D -H -G caddy caddy \
-    && chown -R caddy:caddy /srv /config /data \
-    && caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-
-USER caddy
-
-EXPOSE 9866
-
-# busybox wget: --spider makes a HEAD-style request and sets the exit code.
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --spider http://127.0.0.1:9866/healthz || exit 1
-
-ENTRYPOINT []
-
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "server/dist/index.js"]

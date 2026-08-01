@@ -1,0 +1,32 @@
+{
+ "out": "client/public/models/yetibot.glb",
+ "source_tris": 18538,
+ "nodes": [
+  "back_panel",
+  "bezel",
+  "body",
+  "head_top",
+  "screen",
+  "yetibot_root"
+ ],
+ "rig": {
+  "head_top": [
+   -0.0,
+   0.0,
+   37.36
+  ],
+  "body_height_mm": 74.73,
+  "screen_world": {
+   "min": [
+    -13.47,
+    -12.59,
+    -4.33
+   ],
+   "max": [
+    12.71,
+    -11.89,
+    13.34
+   ]
+  }
+ }
+}

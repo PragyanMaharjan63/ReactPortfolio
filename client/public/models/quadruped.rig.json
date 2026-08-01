@@ -1,0 +1,165 @@
+{
+ "out": "client/public/models/quadruped.glb",
+ "source_tris": 230396,
+ "nodes": [
+  "body_box",
+  "body_cover",
+  "bracket_BL",
+  "bracket_BR",
+  "bracket_FL",
+  "bracket_FR",
+  "footPivot_BL",
+  "footPivot_BR",
+  "footPivot_FL",
+  "footPivot_FR",
+  "foot_BL",
+  "foot_BR",
+  "foot_FL",
+  "foot_FR",
+  "hip_BL",
+  "hip_BR",
+  "hip_FL",
+  "hip_FR",
+  "knee_BL",
+  "knee_BR",
+  "knee_FL",
+  "knee_FR",
+  "leg_BL",
+  "leg_BR",
+  "leg_FL",
+  "leg_FR",
+  "linkTop_BL",
+  "linkTop_BR",
+  "linkTop_FL",
+  "linkTop_FR",
+  "link_BL",
+  "link_BR",
+  "link_FL",
+  "link_FR",
+  "quadruped_root"
+ ],
+ "rig": {
+  "legs": {
+   "FL": {
+    "hipPlusIsForward": 1,
+    "kneePlusIsUp": -1,
+    "hip": [
+     -21.37,
+     -39.31,
+     14.83
+    ],
+    "hip_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "knee": [
+     -43.71,
+     -49.78,
+     9.61
+    ],
+    "knee_axis": [
+     0.609,
+     -0.793,
+     -0.0
+    ],
+    "mirrored": true,
+    "hip_to_knee": 25.21,
+    "bar_leg": 43.45,
+    "bar_link": 43.17,
+    "coupler_knee_side": 25.79,
+    "coupler_foot_side": 26.14
+   },
+   "FR": {
+    "hipPlusIsForward": -1,
+    "kneePlusIsUp": 1,
+    "hip": [
+     25.3,
+     -38.94,
+     14.82
+    ],
+    "hip_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "knee": [
+     47.11,
+     -50.62,
+     9.36
+    ],
+    "knee_axis": [
+     -0.635,
+     -0.773,
+     -0.0
+    ],
+    "mirrored": false,
+    "hip_to_knee": 25.34,
+    "bar_leg": 43.45,
+    "bar_link": 43.17,
+    "coupler_knee_side": 25.68,
+    "coupler_foot_side": 26.19
+   },
+   "BL": {
+    "hipPlusIsForward": 1,
+    "kneePlusIsUp": -1,
+    "hip": [
+     -21.58,
+     7.01,
+     14.83
+    ],
+    "hip_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "knee": [
+     -37.95,
+     25.46,
+     9.61
+    ],
+    "knee_axis": [
+     -0.588,
+     -0.809,
+     -0.0
+    ],
+    "mirrored": true,
+    "hip_to_knee": 25.21,
+    "bar_leg": 43.45,
+    "bar_link": 43.17,
+    "coupler_knee_side": 25.79,
+    "coupler_foot_side": 26.14
+   },
+   "BR": {
+    "hipPlusIsForward": -1,
+    "kneePlusIsUp": 1,
+    "hip": [
+     25.68,
+     7.02,
+     14.47
+    ],
+    "hip_axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "knee": [
+     42.28,
+     25.37,
+     9.01
+    ],
+    "knee_axis": [
+     0.597,
+     -0.802,
+     -0.0
+    ],
+    "mirrored": false,
+    "hip_to_knee": 25.34,
+    "bar_leg": 43.45,
+    "bar_link": 43.17,
+    "coupler_knee_side": 25.68,
+    "coupler_foot_side": 26.19
+   }
+  }
+ }
+}

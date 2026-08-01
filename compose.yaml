@@ -1,0 +1,71 @@
+# Production deployment.
+#
+#   docker compose up --build -d
+#
+# The app listens on 3000 inside the container and is published on 6767, which
+# is what the reverse proxy in front of it should forward to.
+#
+# Mongo is optional. The site serves bundled project content without it; the
+# service is here so content can be edited at runtime. Drop the `mongo`
+# service and MONGODB_URI to run the app standalone.
+
+name: portfolio
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: maharjan-pragyan-portfolio:latest
+    container_name: portfolio-app
+    restart: unless-stopped
+    ports:
+      # host:container — 3000 is fixed by the server, 6767 is the proxy target.
+      - "6767:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+      SITE_URL: ${SITE_URL:-https://maharjanpragyan.com.np}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/portfolio}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - portfolio
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    # No source bind mounts: the image is the artefact, and a mount would let
+    # the host tree silently override what was built and tested.
+    security_opt:
+      - no-new-privileges:true
+
+  mongo:
+    image: mongo:7
+    container_name: portfolio-mongo
+    restart: unless-stopped
+    # Deliberately not published to the host — only the app needs it.
+    expose:
+      - "27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - portfolio
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+networks:
+  portfolio:
+    driver: bridge
+
+volumes:
+  mongo-data:

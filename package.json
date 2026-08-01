@@ -1,34 +1,23 @@
 {
-  "name": "reactportfolio",
+  "name": "maharjan-pragyan-portfolio",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@formspree/react": "^3.0.0",
-    "@tailwindcss/vite": "^4.1.13",
-    "dotenv": "^17.4.1",
-    "emailjs-com": "^3.2.0",
-    "lucide-react": "^0.544.0",
-    "motion": "^12.23.16",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.13"
+    "dev": "concurrently -n client,server -c cyan,magenta \"npm:dev -w client\" \"npm:dev -w server\"",
+    "build": "npm run build -w client && npm run build -w server",
+    "start": "npm run start -w server",
+    "lint": "npm run lint -w client && npm run lint -w server",
+    "type-check": "npm run type-check -w client && npm run type-check -w server",
+    "seed": "npm run seed -w server",
+    "sync:content": "tsx scripts/sync-content.mjs",
+    "build:sim": "docker build -t portfolio-sim-build -f scripts/sim/Dockerfile . && docker run --rm -v \"$PWD:/work\" -u \"$(id -u):$(id -g)\" portfolio-sim-build",
+    "build:models": "blender -b scripts/blender/quadruped.blend --python scripts/blender/export_rigged_glb.py -- client/public/models/quadruped.glb && blender -b scripts/blender/yetibot.blend --python scripts/blender/export_rigged_glb.py -- client/public/models/yetibot.glb"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react-swc": "^4.0.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "vite": "^7.1.2"
+    "concurrently": "^10.0.4"
   }
 }
