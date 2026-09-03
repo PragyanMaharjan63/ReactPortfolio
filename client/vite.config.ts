@@ -25,6 +25,11 @@ export default defineConfig({
       },
     },
   },
+  // The Express image installs server dependencies only. Bundle the React
+  // tree into the SSR entry so it does not require client packages at runtime.
+  ssr: {
+    noExternal: true,
+  },
   server: {
     port: 5173,
     proxy: { "/api": { target: "http://localhost:3000", changeOrigin: true } },

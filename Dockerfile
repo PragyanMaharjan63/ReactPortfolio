@@ -8,7 +8,7 @@
 #   scripts/  content sync (client data -> server bundled fallback)
 #
 # The runtime is Node: Express serves /api, the static build, and injects
-# per-route metadata into index.html. Mongo is optional — without MONGODB_URI
+# per-route SSR markup and metadata into index.html. Mongo is optional — without MONGODB_URI
 # the API serves the bundled project content and the site is fully functional.
 #
 # Build:  docker build -t portfolio .
@@ -54,9 +54,8 @@ FROM base AS prod-deps
 COPY package.json package-lock.json ./
 COPY client/package.json ./client/
 COPY server/package.json ./server/
-# Scoped to the server workspace on purpose. The client's runtime dependencies
-# (three, drei, framer-motion, lucide) are already compiled into the static
-# bundle — installing them here added ~200 MB of dead weight to the image.
+# The client's runtime dependencies are bundled into client/dist/server by
+# Vite, so they are not needed in the production image.
 RUN npm ci --omit=dev --workspace server --include-workspace-root \
     && npm cache clean --force
 

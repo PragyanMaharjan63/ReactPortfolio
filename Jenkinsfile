@@ -178,10 +178,16 @@ pipeline {
                                 curl --silent "${HEALTH_URL}"; echo
                                 # The API being up is not enough - the SPA must
                                 # actually be served.
-                                curl --fail --silent --max-time 5 "http://127.0.0.1:${HOST_PORT}/" >/dev/null \
-                                    && echo "Document served." && exit 0
-                                echo "ERROR: / did not respond." >&2
-                                exit 1
+                                document=$(curl --fail --silent --max-time 5 "http://127.0.0.1:${HOST_PORT}/") || {
+                                    echo "ERROR: / did not respond." >&2
+                                    exit 1
+                                }
+                                echo "$document" | grep -q '<div id="root"><' || {
+                                    echo "ERROR: / returned no server-rendered root markup." >&2
+                                    exit 1
+                                }
+                                echo "Server-rendered document served."
+                                exit 0
                             fi
 
                             echo "Attempt $i/20 failed; retrying in 5s..."
