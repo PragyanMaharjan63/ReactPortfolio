@@ -59,6 +59,7 @@ const escapeHtml = (value: string): string =>
     .replace(/"/g, "&quot;");
 
 let template: string | null = null;
+let renderApp: ((url: string) => string) | null = null;
 
 async function loadTemplate(clientDir: string): Promise<string> {
   if (template) return template;
@@ -71,7 +72,7 @@ export async function renderDocument(
   clientDir: string,
   pathname: string,
 ): Promise<string> {
-  const html = await loadTemplate(clientDir);
+  const templateHtml = await loadTemplate(clientDir);
   const { title, description } = seoFor(pathname);
   const canonical = `${env.siteUrl}${pathname === "/" ? "" : pathname}`;
 
@@ -88,6 +89,19 @@ export async function renderDocument(
     `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
     `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
   ].join("\n    ");
+
+  if (!renderApp) {
+    const serverEntry = path.join(clientDir, "server", "entry-server.js");
+    ({ render: renderApp } = (await import(serverEntry)) as {
+      render: (url: string) => string;
+    });
+  }
+
+  const body = renderApp(pathname);
+  const html = templateHtml.replace(
+    '<div id="root"></div>',
+    `<div id="root">${body}</div>`,
+  );
 
   return html.replace(
     /<!--SEO-->[\s\S]*?<!--\/SEO-->/,

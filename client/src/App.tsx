@@ -1,16 +1,14 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import HomePage from "@/pages/HomePage";
+import WorkPage from "@/pages/WorkPage";
+import ProjectPage from "@/pages/ProjectPage";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
+import NotFoundPage from "@/pages/NotFoundPage";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
-
-// Only the home page is in the entry chunk; the rest split out.
-const WorkPage = lazy(() => import("@/pages/WorkPage"));
-const ProjectPage = lazy(() => import("@/pages/ProjectPage"));
-const AboutPage = lazy(() => import("@/pages/AboutPage"));
-const ContactPage = lazy(() => import("@/pages/ContactPage"));
-const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 function RouteFallback() {
   return (
