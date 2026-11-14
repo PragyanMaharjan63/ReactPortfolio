@@ -170,7 +170,7 @@ def build_yeti():
         "Move/rotate parts until the assembly is right, then save and run:\n"
         "  blender -b scripts/blender/yetibot.blend \\\n"
         "    --python scripts/blender/export_glb.py -- \\\n"
-        "    client/public/models/yetibot.glb\n\n"
+        "    public/models/yetibot.glb\n\n"
         "The exporter decimates copies; your meshes here stay full-resolution.\n"
         "'unused_parts' holds print-internal pieces, hidden by default.\n"
     )
@@ -288,7 +288,7 @@ def build_kame(servo="sg90"):
         "When done, save and run:\n"
         "  blender -b scripts/blender/quadruped.blend \\\n"
         "    --python scripts/blender/export_glb.py -- \\\n"
-        "    client/public/models/quadruped.glb\n"
+        "    public/models/quadruped.glb\n"
     )
 
 

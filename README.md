@@ -1,233 +1,112 @@
 # Pragyan Maharjan — Portfolio
 
-Robotics and full-stack engineering portfolio. MERN monorepo with an
-interactive WebGL robot viewer.
+A Next.js App Router portfolio for robotics and full-stack engineering, with interactive 3D robots driven by their original firmware compiled to WebAssembly.
 
-Production: <https://maharjanpragyan.com.np>
+Production domain: <https://maharjanpragyan.com.np>
 
----
+## Development
 
-## 1. Overview
-
-An npm-workspaces monorepo:
-
-| Workspace | Role |
-|---|---|
-| `client/` | Vite + React + TypeScript SPA — the site |
-| `server/` | Express + Mongoose — API, static hosting, per-route metadata |
-| `scripts/` | Generates the server's bundled content from the client's data |
-
-Express serves everything on one port: `/api/*`, the compiled bundle, and
-`index.html` with route-specific `<title>`/OG tags injected before the response
-is sent, so crawlers and link unfurlers get real metadata from an SPA.
-
-**MongoDB is optional.** With no `MONGODB_URI` the API serves project content
-bundled at build time and the site is fully functional. Setting it lets you
-edit project content without a redeploy.
-
-## 2. Technology stack
-
-React 19 · TypeScript · Vite · Tailwind CSS v4 · Framer Motion ·
-React Three Fiber + drei + three.js · lucide-react ·
-Express 5 · Mongoose · Docker · Docker Compose · Jenkins
-
-## 3. Local development
+Use **Node.js 24.15+** (Node 24 LTS is used by Docker and Jenkins). SQLite uses Node's built-in `node:sqlite`; no database service or native npm addon is required.
 
 ```bash
-npm ci                 # install all workspaces
-npm run dev            # client on :5173, server on :3000 (proxied)
+npm ci
+npm run dev
+# http://localhost:3000 — Turbopack, pages, and API on one port
 ```
 
-Run them separately if you prefer:
+Optional environment overrides in `.env.local`:
+
+```dotenv
+SITE_URL=https://maharjanpragyan.com.np
+DATABASE_PATH=./data/portfolio.sqlite
+```
+
+`DATABASE_PATH` is also read by the seed CLI when exported in the shell. The CLI does not load `.env.local` automatically.
+
+## Stack and layout
+
+Next.js 16 · React 19 · TypeScript · Turbopack · Tailwind CSS 4 · Framer Motion · React Three Fiber / drei / Three.js · SQLite.
+
+| Path | Purpose |
+| --- | --- |
+| `src/app/` | App Router pages, layouts, metadata, sitemap, robots and API handlers |
+| `src/views/` | Server-rendered page composition |
+| `src/components/` | Sections, motion, UI and preserved 3D robot viewers |
+| `src/lib/database.ts` | SQLite schema, initialization, queries and explicit content seed |
+| `src/lib/projects.ts` | Server-only database access; request-scoped read deduplication |
+| `src/data/projects.ts` | Initial project content and project types |
+| `public/` | Original media, compressed models, Draco decoder and WASM firmware |
+| `scripts/` | Content seeding, Blender exports and firmware compilation |
+
+All existing URLs are retained: `/`, `/work`, `/about`, `/contact`, `/projects/<slug>`, `/api/projects`, `/api/projects/<slug>` and `/api/health`. Missing projects now return real 404 responses.
+
+## Database
+
+The first request creates `data/portfolio.sqlite`, applies schema version 1 and inserts the initial project records in a transaction. Both HTML pages and API endpoints read SQLite at request time, including the home page, project listings, detail pages and sitemap. Builds never create or bundle a runtime database.
+
+Startup preserves database edits and deletions. To explicitly refresh the known projects after editing `src/data/projects.ts`:
 
 ```bash
-npm run dev -w client
-npm run dev -w server
+npm run seed
+# Or select another database:
+DATABASE_PATH=/absolute/path/portfolio.sqlite npm run seed
 ```
 
-## 4. Environment variables
+Seeding upserts by slug without duplicates; it does not delete additional runtime records. SQLite uses WAL, a busy timeout and parameterized lookups. The schema preserves all existing project fields, including galleries, video metadata and model paths. The health endpoint returns 503 if the actual database cannot be queried.
 
-Copy the template — every variable is optional and has a working default:
+The previous MongoDB connection was optional. This migration imports all repository project content. If the deployed MongoDB contains additional or edited records, export and reconcile those records before retiring that database; this repository contains no production credentials or live export.
+
+For production, provide a **writable persistent directory**. Docker Compose mounts `sqlite-data` at `/app/data`. Preserve the volume across deployments (`docker compose down` preserves it; `down -v` removes it). Use SQLite's backup API or stop the app before copying the database; copying only the main file while writes are active can miss its WAL. Run one app instance per local SQLite volume. An ephemeral serverless filesystem does not provide durable storage.
+
+## Production
 
 ```bash
-cp .env.example .env
+npm run build       # optimized Turbopack production build
+npm start           # Next.js on :3000
 ```
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `NODE_ENV` | `development` | Standard Node environment |
-| `PORT` | `3000` | Port Express binds inside the container |
-| `HOSTNAME` | `0.0.0.0` | Must stay `0.0.0.0` in Docker |
-| `SITE_URL` | `https://maharjanpragyan.com.np` | Canonical origin for `<link rel=canonical>` and `og:url` |
-| `MONGODB_URI` | *(empty)* | Optional. Empty ⇒ bundled content |
-| `CLIENT_DIR` | auto-detected | Absolute path to `client/dist` |
-
-No secrets are required. `.env` is gitignored and excluded from the image.
-
-## 5. Production build
-
-```bash
-npm run build          # client -> client/dist, server -> server/dist
-npm start              # serves both on http://localhost:3000
-```
-
-## 6. Docker
-
-```bash
-docker build -t maharjan-pragyan-portfolio:test .
-docker run --rm -p 6767:3000 maharjan-pragyan-portfolio:test
-curl --fail http://localhost:6767/api/health
-```
-
-Four stages — `base`, `deps`, `builder`, `prod-deps`, `runner`. The runner
-holds only production dependencies, `server/dist` and `client/dist`: no source,
-no toolchain. Runs as the unprivileged `node` user (uid 1000).
-
-## 7. Docker Compose
 
 ```bash
 docker compose up --build -d
-docker compose logs -f app
-docker compose down
-```
-
-Publishes **host `6767` → container `3000`**. Point your reverse proxy at 6767.
-Mongo runs on the internal network only and is never published to the host.
-
-Seed MongoDB from the bundled content (idempotent, upserts by slug):
-
-```bash
-docker compose exec app node -e "process.exit(0)"   # confirm app is up
-MONGODB_URI=mongodb://127.0.0.1:27017/portfolio npm run seed
-```
-
-## 8. Jenkins deployment
-
-`Jenkinsfile` runs: Checkout → Validate → Install → Lint → Type Check → Build →
-Docker Build → Deploy → Health Check → Cleanup.
-
-- `checkout scm` uses the credentials Jenkins already holds — nothing hardcoded,
-  and private repositories work.
-- Lint, type-check and build run inside `node:22-alpine`, so the agent needs
-  only Docker.
-- Before the `latest` tag moves, the current image is tagged `:rollback`.
-- The health check polls `/api/health` (20 attempts, 5s apart, 3-minute
-  timeout) and also verifies `/` serves the document.
-- On failure: container logs are printed and the previous image is redeployed
-  automatically.
-- Cleanup prunes **dangling layers only** — never `system prune -a`, so the
-  rollback image survives.
-
-## 9. Health endpoint
-
-```bash
-curl http://localhost:6767/api/health
-# {"status":"ok","uptime":12,"database":"not-configured","env":"production"}
-```
-
-Returns 200 whenever the process can serve traffic. The database is optional,
-so its state is reported but never fails the check.
-
-## 10. 3D models and robot simulations
-
-Both robots are shown as their real printed geometry and are **driven by their
-own firmware**, compiled to WebAssembly. The gait tables, the tap rules and the
-face animation are executed, not re-implemented in TypeScript, so the site
-cannot drift away from what the hardware does.
-
-| | Quadruped | YetiBot |
-|---|---|---|
-| Model | `client/public/models/quadruped.glb` | `.../yetibot.glb` |
-| Source | `scripts/blender/quadruped.blend` | `scripts/blender/yetibot.blend` |
-| Firmware | `scripts/robotCode/quadrapod3d` | `scripts/robotCode/yetibot` |
-| In the viewer | Forward / Back / Turn buttons run the real gait | Tap the head; the real state machine responds |
-
-Read next:
-
-- `scripts/sim/README.md` — how the firmware is compiled and driven
-- `scripts/blender/README.md` — editing the assemblies
-- `client/public/models/QUADRUPED_MODEL.md` — servo channel map, motor placement
-- `client/public/models/YETIBOT_MODEL.md` — hardware, tap rules, frame ranges
-
-### Rebuilding after a change
-
-```bash
-npm run build:models   # .blend -> .glb, rebuilding the joint rig (needs Blender)
-npm run build:sim      # firmware -> wasm, compress the .glb (needs Docker)
-```
-
-Both write into `client/public/`, and their outputs are committed. The runtime
-image therefore needs no Emscripten, no Blender and no `gltf-transform` — `npm
-run build` and the production `Dockerfile` are untouched by any of this.
-
-Changing only firmware needs `build:sim`. Changing an assembly needs both.
-
-### Adding a different model
-
-1. Export to GLB and reduce first: drop never-visible internal parts, decimate
-   dense meshes, merge materials, cap textures at 2048px.
-2. Save to `client/public/models/<slug>.glb` and let `npm run build:sim`
-   compress it.
-3. In `client/src/data/projects.ts` set `model: "/models/<slug>.glb"` and the
-   right `modelType`.
-
-Only the two robots are wired to a firmware simulation; any other model renders
-as a static, orbitable object. See `client/public/models/README.md`.
-
-## 11. Adding a project
-
-Everything lives in one typed array: `client/src/data/projects.ts`.
-
-1. Append a `Project` object. `slug` becomes the URL `/projects/<slug>`.
-2. Put images in `client/public/media/<slug>/` and reference them as
-   `/media/<slug>/file.webp`.
-   **Do not use `/projects/` for assets** — that path is the route namespace
-   and a directory there shadows the page with a 301.
-3. `featured: true` promotes it to the homepage.
-4. `domain: "robotics"` gives it the 3D viewer and metadata table;
-   `"web"` gives it a browser-framed screenshot.
-5. Anything unverified goes in `missingInfo[]` — it renders as a visible
-   checklist rather than being quietly omitted.
-6. Run `npm run sync:content` so the server's fallback matches (the server
-   build does this automatically).
-
-## 12. Ports
-
-| Context | Port |
-|---|---|
-| Vite dev server | 5173 |
-| Express (dev and in-container) | 3000 |
-| Published by Compose | 6767 → 3000 |
-| MongoDB | 27017, internal network only |
-
-## 13. Verification
-
-```bash
-npm ci && npm run lint && npm run type-check && npm run build
-docker build -t maharjan-pragyan-portfolio:test .
-docker run --rm -p 6767:3000 maharjan-pragyan-portfolio:test
 curl --fail http://localhost:6767/api/health
+# {"status":"ok","database":"connected","engine":"sqlite",...}
 ```
 
-## 14. Troubleshooting
+The multi-stage Docker image uses Next's standalone output and runs as the unprivileged `node` user. Compose retains host port **6767 → 3000**. MongoDB is no longer needed. Jenkins validates, installs, lints, type-checks, runs database tests, builds and deploys the standalone image, then verifies database health and server-rendered hero markup. Its existing image rollback is retained. No deployment is performed by changing these files.
 
-**Blank page, console mentions a route** — an asset directory under
-`client/public/` is shadowing a route. Assets belong in `/media/`, never
-`/projects/`.
+## Performance and motion
 
-**3D viewer shows a photograph instead of a canvas** — expected when WebGL is
-unavailable or the model fails to load. The viewer degrades to the poster
-image; check the console for a GLTF load error.
+- Server Components keep page composition and database code out of the browser bundle.
+- Turbopack handles development and production builds; `npm run analyze` opens Next's Turbopack bundle analyzer.
+- `next/image` provides responsive sizes and AVIF/WebP optimization, including a prioritized hero poster.
+- `next/font/local` self-hosts variable Manrope and JetBrains Mono fonts from npm packages, without network requests at build time.
+- Next links prefetch routes; route-specific titles, canonical URLs and social metadata are rendered on the server.
+- The Three.js viewer is dynamically imported with SSR disabled. The lightweight poster is rendered immediately; original model and Draco downloads overlap JavaScript loading.
+- Original GLBs, WASM, gait tables, touch gestures, display frames, orbit controls, shadows, antialiasing and DPR are retained. No visual quality settings were reduced.
+- Existing Framer Motion entrance/reveal/menu animations remain. Reduced-motion preferences are respected and a photograph remains available if WebGL fails.
+- Public assets have revalidatable cache headers; Next's fingerprinted bundles and fonts use its own immutable caching.
 
-**Viewer never appears** — it mounts only when scrolled within 200px of the
-viewport, by design, to keep three.js (≈320 KB gzip) out of first paint.
+## Verification
 
-**`npm ci` fails in Docker** — `package-lock.json` and the workspace
-manifests must be committed and in sync. The build fails loudly rather than
-falling back to a non-deterministic install.
+```bash
+npm run lint
+npm run type-check
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
 
-**Mongo connection errors in logs, site still works** — intended. The
-connection is best-effort; the API falls back to bundled content.
+Browser tests run against the **production** server on port 3100 with an isolated SQLite database. They exercise desktop/mobile navigation, metadata, all project URLs, API health and 404s, actual WASM gait execution and changing servo angles, YetiBot display frames and touch interaction, pause/reset controls, reduced motion and WebGL fallback.
 
-**Container exits immediately** — `docker logs portfolio-app`. Most often
-`PORT`/`HOSTNAME` were overridden; `HOSTNAME` must be `0.0.0.0`.
+## Models and firmware
+
+The existing animation and simulation implementation lives in `src/components/three/` and `src/sim/`. Public asset URLs have not changed.
+
+```bash
+npm run build:models  # Blender assemblies → public/models/*.glb (needs Blender)
+npm run build:sim     # firmware → public/sim/*, Draco compression (needs Docker)
+```
+
+See [firmware build notes](scripts/sim/README.md), [Blender notes](scripts/blender/README.md), [quadruped rig](public/models/QUADRUPED_MODEL.md) and [YetiBot rig](public/models/YETIBOT_MODEL.md). Source firmware under `scripts/robotCode/` is required to rebuild simulations; committed runtime artifacts work without that toolchain.
+
+To add a project: add its typed seed record, put assets in `public/media/<slug>/`, run `npm run seed`, and visit `/projects/<slug>`. Keep assets out of `public/projects/`, which is the page route namespace. Undocumented project details stay visible in `missingInfo` instead of being invented.

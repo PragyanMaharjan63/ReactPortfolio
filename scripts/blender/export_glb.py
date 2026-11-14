@@ -3,7 +3,7 @@ Exports the currently-open .blend to a web-ready GLB.
 
 Run against a saved .blend:
   blender -b scripts/blender/quadruped.blend \
-    --python scripts/blender/export_glb.py -- client/public/models/quadruped.glb
+    --python scripts/blender/export_glb.py -- public/models/quadruped.glb
 
 What it does:
   - hides nothing you left visible; hidden objects are excluded

@@ -17,7 +17,7 @@ render() {
   local model="$1" out="$2" yaw="$3" pitch="$4"
   mkdir -p "$(dirname "$out")"
   blender -b --factory-startup --python scripts/blender/render_card.py -- \
-    "client/public/models/$model.glb" "$out.png" 1280 800 "$yaw" "$pitch" \
+    "public/models/$model.glb" "$out.png" 1280 800 "$yaw" "$pitch" \
     2>&1 | grep -E '^###RENDERED###|Error:' || true
   python3 - "$out" <<'PY'
 import os, sys
@@ -33,5 +33,5 @@ PY
 
 # The quadruped is wide and flat, so a higher pitch shows the leg layout. The
 # YetiBot's display faces +Y in the .blend, hence a yaw past 180 to face it.
-render quadruped client/public/media/quadruped/model 35 18
-render yetibot   client/public/media/yetibot/model  205 12
+render quadruped public/media/quadruped/model 35 18
+render yetibot   public/media/yetibot/model  205 12

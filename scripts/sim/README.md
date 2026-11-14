@@ -14,10 +14,10 @@ repo mounted at `/work`. Outputs, all committed:
 
 | Output | From |
 |---|---|
-| `client/public/sim/gait.{mjs,wasm}` | `scripts/robotCode/quadrapod3d/lib/Walk/walk.cpp` + `ServoConfig.cpp` |
-| `client/public/sim/yeti.{mjs,wasm}` | `scripts/robotCode/yetibot/includes/app.h` (whole state machine + 772 frames) |
-| `client/public/draco/*` | the decoder shipped inside `three`, so no CDN is needed |
-| `client/public/models/*.glb` | compressed in place (3.0 MB → 207 KB) |
+| `public/sim/gait.{mjs,wasm}` | `scripts/robotCode/quadrapod3d/lib/Walk/walk.cpp` + `ServoConfig.cpp` |
+| `public/sim/yeti.{mjs,wasm}` | `scripts/robotCode/yetibot/includes/app.h` (whole state machine + 772 frames) |
+| `public/draco/*` | the decoder shipped inside `three`, so no CDN is needed |
+| `public/models/*.glb` | compressed in place (3.0 MB → 207 KB) |
 
 The toolchain stays in this container. `npm run build` and the production
 `Dockerfile` never need Emscripten, Blender or `gltf-transform`.
@@ -60,8 +60,8 @@ tables directly:
 
 ```bash
 node -e '
-  const f = await import("./client/public/sim/gait.mjs");
-  const M = await f.default({ wasmBinary: require("fs").readFileSync("client/public/sim/gait.wasm") });
+  const f = await import("./public/sim/gait.mjs");
+  const M = await f.default({ wasmBinary: require("fs").readFileSync("public/sim/gait.wasm") });
   M._gait_init(); M._gait_run(0);
   const n = M._gait_count(), s = M._gait_stride();
   const d = new Int32Array(M.HEAP32.buffer, M._gait_data(), n * s);

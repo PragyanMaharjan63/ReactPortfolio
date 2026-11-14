@@ -1,7 +1,7 @@
-// Build and deploy the MERN portfolio on the Jenkins host with Docker Compose.
+// Build and deploy the Next.js portfolio on the Jenkins host with Docker Compose.
 //
 // Layout this pipeline expects:
-//   ./client  ./server  ./scripts  ./Dockerfile  ./compose.yaml
+//   ./src/app  ./public  ./scripts  ./Dockerfile  ./compose.yaml
 //
 // Deployment: the image is built locally and run via `docker compose`.
 // Nothing is pushed to a registry, so no `docker login` and no registry
@@ -44,7 +44,7 @@ pipeline {
         HEALTH_URL     = "http://127.0.0.1:${HOST_PORT}/api/health"
 
         ROLLBACK_TAG = 'rollback'
-        NODE_IMAGE   = 'node:22-alpine'
+        NODE_IMAGE   = 'node:24-alpine'
 
         SITE_URL = 'https://maharjanpragyan.com.np'
     }
@@ -74,8 +74,8 @@ pipeline {
 
                     missing=0
                     for f in package.json package-lock.json Dockerfile compose.yaml \
-                             client/package.json server/package.json \
-                             client/src/main.tsx server/src/index.ts; do
+                             next.config.ts src/app/layout.tsx \
+                             src/app/page.tsx src/lib/database.ts; do
                         [ -f "$f" ] || { echo "ERROR: missing $f" >&2; missing=1; }
                     done
                     [ "$missing" -eq 0 ] || exit 1
@@ -114,13 +114,21 @@ pipeline {
             }
         }
 
+        stage('Database Tests') {
+            steps {
+                sh '''
+                    set -eu
+                    docker run --rm -v "$PWD":/app -w /app "${NODE_IMAGE}" npm test
+                '''
+            }
+        }
+
         stage('Build') {
             steps {
                 sh '''
                     set -eu
                     docker run --rm -v "$PWD":/app -w /app "${NODE_IMAGE}" npm run build
-                    test -f client/dist/index.html || { echo "ERROR: client build produced no index.html" >&2; exit 1; }
-                    test -f server/dist/index.js   || { echo "ERROR: server build produced no index.js" >&2; exit 1; }
+                    test -f .next/standalone/server.js || { echo "ERROR: Next.js standalone server missing" >&2; exit 1; }
                 '''
             }
         }
@@ -176,14 +184,14 @@ pipeline {
                             if curl --fail --silent --max-time 5 "${HEALTH_URL}" >/dev/null; then
                                 echo "Health check passed on attempt $i."
                                 curl --silent "${HEALTH_URL}"; echo
-                                # The API being up is not enough - the SPA must
+                                # The API being up is not enough - the page must
                                 # actually be served.
                                 document=$(curl --fail --silent --max-time 5 "http://127.0.0.1:${HOST_PORT}/") || {
                                     echo "ERROR: / did not respond." >&2
                                     exit 1
                                 }
-                                echo "$document" | grep -q '<div id="root"><' || {
-                                    echo "ERROR: / returned no server-rendered root markup." >&2
+                                echo "$document" | grep -q 'id="hero-heading"' || {
+                                    echo "ERROR: / returned no server-rendered hero markup." >&2
                                     exit 1
                                 }
                                 echo "Server-rendered document served."

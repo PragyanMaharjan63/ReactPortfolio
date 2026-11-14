@@ -32,3 +32,15 @@ server/dist
 .env
 .env.local
 *.tsbuildinfo
+
+# Next.js / SQLite / browser verification
+.next/
+out/
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+playwright-report/
+test-results/
+.env.*
+!.env.example

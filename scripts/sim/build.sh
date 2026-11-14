@@ -13,7 +13,7 @@ SHIMS="scripts/sim/shims"
 SRC="scripts/sim/src"
 QUAD="scripts/robotCode/quadrapod3d"
 YETI="scripts/robotCode/yetibot"
-OUT="client/public/sim"
+OUT="public/sim"
 
 mkdir -p "$OUT"
 
@@ -61,8 +61,8 @@ emcc "${COMMON[@]}" \
 # always matches the renderer and the site works behind a strict CSP.
 DRACO_SRC="node_modules/three/examples/jsm/libs/draco/gltf"
 if [ -d "$DRACO_SRC" ]; then
-  mkdir -p client/public/draco
-  cp "$DRACO_SRC"/* client/public/draco/
+  mkdir -p public/draco
+  cp "$DRACO_SRC"/* public/draco/
   echo ">> draco decoder copied from three@$(node -p "require('./node_modules/three/package.json').version" 2>/dev/null || echo '?')"
 else
   echo ">> WARNING: $DRACO_SRC missing; run npm install before building assets"
@@ -73,7 +73,7 @@ fi
 # it, just larger.
 if command -v gltf-transform >/dev/null 2>&1; then
   for m in quadruped yetibot; do
-    f="client/public/models/$m.glb"
+    f="public/models/$m.glb"
     [ -f "$f" ] || continue
     before=$(stat -c%s "$f")
 
@@ -85,8 +85,8 @@ if command -v gltf-transform >/dev/null 2>&1; then
     # The temp file must keep a .glb extension: gltf-transform picks its
     # container from the output extension, so any other suffix silently writes
     # JSON glTF plus a .bin sidecar instead of one binary file.
-    tmp1="client/public/models/.$m.a.glb"
-    tmp2="client/public/models/.$m.b.glb"
+    tmp1="public/models/.$m.a.glb"
+    tmp2="public/models/.$m.b.glb"
     if gltf-transform dedup "$f" "$tmp1" >/dev/null 2>&1 &&
        gltf-transform draco "$tmp1" "$tmp2" >/dev/null 2>&1; then
       mv "$tmp2" "$f"
@@ -103,7 +103,7 @@ if command -v gltf-transform >/dev/null 2>&1; then
   # until someone clicks a button in the browser. Check it here instead.
   node -e '
     const fs = require("fs");
-    const p = "client/public/models/quadruped.glb";
+    const p = "public/models/quadruped.glb";
     const b = fs.readFileSync(p);
     if (b.readUInt32LE(0) !== 0x46546c67) { console.error("not a binary GLB: " + p); process.exit(1); }
     const g = JSON.parse(b.subarray(20, 20 + b.readUInt32LE(12)).toString());

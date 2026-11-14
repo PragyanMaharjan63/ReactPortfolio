@@ -52,3 +52,14 @@ stlfiles
 # COPYs build.sh from the build context.
 scripts/blender
 scripts/robotCode
+
+# Next builds and runtime data must be created inside the image/volume.
+.next
+out
+data
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+playwright-report
+test-results
+tests

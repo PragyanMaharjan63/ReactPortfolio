@@ -1,23 +1,48 @@
 {
   "name": "maharjan-pragyan-portfolio",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0"
+  },
   "scripts": {
-    "dev": "concurrently -n client,server -c cyan,magenta \"npm:dev -w client\" \"npm:dev -w server\"",
-    "build": "npm run build -w client && npm run build -w server",
-    "start": "npm run start -w server",
-    "lint": "npm run lint -w client && npm run lint -w server",
-    "type-check": "npm run type-check -w client && npm run type-check -w server",
-    "seed": "npm run seed -w server",
-    "sync:content": "tsx scripts/sync-content.mjs",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack && node scripts/prepare-standalone.mjs",
+    "start": "node scripts/start.mjs",
+    "lint": "eslint .",
+    "type-check": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:e2e": "playwright test",
+    "seed": "node --import tsx scripts/seed.ts",
+    "analyze": "next analyze",
     "build:sim": "docker build -t portfolio-sim-build -f scripts/sim/Dockerfile . && docker run --rm -v \"$PWD:/work\" -u \"$(id -u):$(id -g)\" portfolio-sim-build",
-    "build:models": "blender -b scripts/blender/quadruped.blend --python scripts/blender/export_rigged_glb.py -- client/public/models/quadruped.glb && blender -b scripts/blender/yetibot.blend --python scripts/blender/export_rigged_glb.py -- client/public/models/yetibot.glb"
+    "build:models": "blender -b scripts/blender/quadruped.blend --python scripts/blender/export_rigged_glb.py -- public/models/quadruped.glb && blender -b scripts/blender/yetibot.blend --python scripts/blender/export_rigged_glb.py -- public/models/yetibot.glb"
+  },
+  "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/manrope": "^5.2.8",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "framer-motion": "^12.43.0",
+    "lucide-react": "^1.28.0",
+    "next": "^16.4.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
+    "three": "^0.185.1"
   },
   "devDependencies": {
-    "concurrently": "^10.0.4"
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.1",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.6",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.1",
+    "typescript": "^6.0.3"
   }
 }

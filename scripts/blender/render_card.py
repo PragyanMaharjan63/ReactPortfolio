@@ -2,7 +2,7 @@
 Render a project-card image from an exported GLB.
 
   blender -b --factory-startup --python scripts/blender/render_card.py -- \
-    client/public/models/quadruped.glb client/public/media/quadruped/model.png
+    public/models/quadruped.glb public/media/quadruped/model.png
 
 The listing page shows a still, not a WebGL canvas: two live viewers on /work
 would cost two GL contexts and the model downloads before anyone has asked for

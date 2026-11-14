@@ -2,10 +2,10 @@
 Export an assembled .blend to a web-ready, *rigged* GLB.
 
   blender -b scripts/blender/quadruped.blend \
-    --python scripts/blender/export_rigged_glb.py -- client/public/models/quadruped.glb
+    --python scripts/blender/export_rigged_glb.py -- public/models/quadruped.glb
 
   blender -b scripts/blender/yetibot.blend \
-    --python scripts/blender/export_rigged_glb.py -- client/public/models/yetibot.glb
+    --python scripts/blender/export_rigged_glb.py -- public/models/yetibot.glb
 
 Why this exists alongside export_glb.py
 ---------------------------------------

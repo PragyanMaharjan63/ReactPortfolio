@@ -3,8 +3,8 @@
 # Build container for the robot simulation assets.
 #
 # It produces two things the site serves but does not build at runtime:
-#   * client/public/sim/*.wasm  — the ESP32 firmware compiled to WebAssembly
-#   * client/public/models/*.glb — the Blender assemblies, compressed
+#   * public/sim/*.wasm  — the ESP32 firmware compiled to WebAssembly
+#   * public/models/*.glb — the Blender assemblies, compressed
 #
 # Neither the Emscripten toolchain nor Blender belongs in the runtime image, and
 # neither should be a prerequisite for `npm run build`. So this is a build-only
