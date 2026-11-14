@@ -28,7 +28,7 @@ export function LoginForm() {
       <button className="btn btn-primary w-full" disabled={busy} type="submit">
         {busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <>Open dashboard <ArrowRight className="size-4" aria-hidden="true" /></>}
       </button>
-      <p className="text-center text-xs text-muted">Private workspace · Your session lasts eight hours.</p>
+      <p className="text-center text-xs text-muted">Use the password configured as ADMIN_PASSWORD. No username is required.</p>
     </form>
   );
 }

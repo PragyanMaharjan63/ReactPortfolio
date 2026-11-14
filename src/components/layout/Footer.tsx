@@ -4,38 +4,12 @@ import { ExternalLink } from "@/components/ui/ExternalLink";
 
 export function Footer() {
   return (
-    <footer className="border-t border-line">
-      <div className="shell flex flex-col gap-8 py-12 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="font-semibold text-primary">{site.name}</p>
-          <p className="mt-1 text-sm text-secondary">{site.role}</p>
-          <p className="mt-1 text-sm text-muted">{site.location}</p>
-        </div>
-
-        <nav aria-label="Footer" className="flex flex-col gap-2 text-sm">
-          <ExternalLink href={site.github} className="text-secondary hover:text-primary">
-            GitHub
-          </ExternalLink>
-          <ExternalLink href={site.linkedin} className="text-secondary hover:text-primary">
-            LinkedIn
-          </ExternalLink>
-          <a
-            href={`mailto:${site.email}`}
-            className="text-secondary transition-colors hover:text-primary"
-          >
-            Email
-          </a>
-          <Link href="/work" className="text-secondary transition-colors hover:text-primary">
-            All work
-          </Link>
-        </nav>
+    <footer className="site-footer border-t border-line">
+      <div className="shell footer-grid">
+        <div><p className="footer-name">{site.name}</p><p className="mt-2 text-xs text-secondary">Robotics, software, and the space in between.</p></div>
+        <nav aria-label="Footer" className="footer-links"><ExternalLink href={site.github}>GitHub</ExternalLink><ExternalLink href={site.linkedin}>LinkedIn</ExternalLink><a href={`mailto:${site.email}`}>Email</a><Link href="/work">All work</Link></nav>
       </div>
-
-      <div className="shell border-t border-line py-6">
-        <p className="label">
-          © {new Date().getFullYear()} {site.name} · Built with Next.js
-        </p>
-      </div>
+      <div className="shell footer-bottom"><p>© {new Date().getFullYear()} {site.name}</p><p>Made in Lalitpur, Nepal.</p><a href="#main" className="text-link">Back to top ↑</a></div>
     </footer>
   );
 }

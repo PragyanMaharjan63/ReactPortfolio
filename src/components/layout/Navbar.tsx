@@ -54,10 +54,9 @@ export function Navbar() {
     <header
       className={cn(
         "site-header sticky top-0 z-50 w-full border-b transition-colors duration-300",
-        // Blur is applied only once content is behind the bar, where it earns
-        // its cost by keeping the labels readable.
+        // A hairline separates the header from content after scrolling.
         scrolled || open
-          ? "border-line bg-background/80 backdrop-blur-md"
+          ? "border-line bg-background/95"
           : "border-transparent",
       )}
     >
@@ -66,8 +65,8 @@ export function Navbar() {
           href="/"
           className="brand flex min-h-11 items-center gap-3 text-sm font-semibold tracking-tight text-primary"
         >
-          <span className="brand-mark" aria-hidden="true">p.</span>
-          <span>{site.name.split(" ")[0]}<span className="block text-[0.65rem] font-normal tracking-widest text-secondary uppercase">Maharjan</span></span>
+          <svg className="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M4 25V7h7a5 5 0 0 1 0 10H4M17 25V7l5 9 6-9v18" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="miter" /></svg>
+          <span>{site.name}<span className="brand-subtitle">Robotics & software</span></span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -84,7 +83,7 @@ export function Navbar() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "inline-flex min-h-11 items-center border-b text-[0.9375rem] transition-colors",
+                      "nav-link inline-flex min-h-11 items-center border-b text-[0.8125rem] transition-colors",
                       active
                         ? "border-accent text-primary"
                         : "border-transparent text-secondary hover:text-primary",

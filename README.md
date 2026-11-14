@@ -93,6 +93,10 @@ The repository uses the standard Next.js server and Vercel deployment configurat
 
 Existing public URLs remain: `/`, `/work`, `/about`, `/contact`, `/projects/<slug>`, `/api/projects`, `/api/projects/<slug>`, `/api/health`.
 
+## Visual direction
+
+An off-white and ink palette, flat surfaces, fine rules, a static SVG dot field and clipped text reveals. Original robot geometry and firmware remain the focus. References: [Logomotion](https://www.logomotion.design/), [Magic UI dot pattern](https://magicui.design/docs/components/dot-pattern), [React Bits](https://reactbits.dev/get-started/index), [devl](https://devl.dev/components), [Aceternity](https://ui.aceternity.com/templates), and [21st](https://21st.dev/). The dot field and motion are implemented with SVG and the existing Framer Motion dependency.
+
 ## Performance and animation
 
 Server Components, responsive optimized images, locally hosted variable fonts, prefetched links, package import optimization, revalidatable assets and the Turbopack analyzer keep the site lean. The Three.js viewer remains dynamically imported without server rendering. Its poster appears immediately while model/decoder downloads overlap loading. Dashboard-provided external images load directly in the browser; local images retain Next's AVIF/WebP optimization.

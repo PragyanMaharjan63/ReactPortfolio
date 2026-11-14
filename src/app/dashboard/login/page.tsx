@@ -16,7 +16,7 @@ export default async function LoginPage() {
       <div className="panel mx-auto max-w-md p-7 sm:p-10">
         <div className="mb-7 flex items-center justify-between"><p className="label text-accent">The control room</p><LockKeyhole className="size-5 text-muted" aria-hidden="true" /></div>
         <h1 className="text-h2">Welcome back.</h1>
-        <p className="mt-3 text-sm text-secondary">A little space to keep your work up to date.</p>
+        <p className="mt-3 text-sm text-secondary">Sign in with your dashboard password to update projects.</p>
         <LoginForm />
       </div>
     </div>

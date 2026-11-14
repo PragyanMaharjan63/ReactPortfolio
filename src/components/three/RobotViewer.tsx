@@ -61,6 +61,8 @@ export interface RobotViewerProps {
   description: string;
   /** Drive the model from the firmware compiled to WebAssembly. */
   simulate?: boolean;
+  showSimulationControls?: boolean;
+  showTouchHint?: boolean;
   priority?: boolean;
 }
 
@@ -72,6 +74,8 @@ export default function RobotViewer({
   posterAlt,
   description,
   simulate = false,
+  showSimulationControls = true,
+  showTouchHint = true,
   priority = false,
 }: RobotViewerProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -197,6 +201,7 @@ export default function RobotViewer({
                 rig={rig}
                 animate={playing && !reducedMotion}
                 allowZoom
+                showTouchHint={showTouchHint}
                 simulate={simulating}
                 command={command}
                 onAngles={handleAngles}
@@ -233,7 +238,7 @@ export default function RobotViewer({
         )}
       </div>
 
-      {inView && simulating && rig === "quadruped" && (
+      {inView && simulating && showSimulationControls && rig === "quadruped" && (
         <GaitControls
           command={command}
           onCommand={setCommand}
@@ -242,7 +247,7 @@ export default function RobotViewer({
         />
       )}
 
-      {inView && simulating && rig === "yetibot" && (
+      {inView && simulating && showSimulationControls && rig === "yetibot" && (
         <TapControls
           state={yeti?.state ?? null}
           frame={yeti?.frame ?? 0}

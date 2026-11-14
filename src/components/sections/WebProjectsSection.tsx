@@ -16,11 +16,11 @@ export function WebProjectsSection({ projects }: { projects: Project[] }) {
       aria-labelledby="web-heading"
     >
       <div className="shell">
-        <SectionHeading id="web-heading" eyebrow="03 / On the internet" title="Thoughtfully built for the web." description="From useful everyday tools to small digital experiences. Live, deployed, and ready to explore." />
+        <SectionHeading id="web-heading" eyebrow="03 — Web applications" title="On the other side of the screen." description="Small tools and full-stack applications, made to be used. Take a look around." />
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
           {withImages.map((project) => (
-            <article key={project.slug}>
+            <article key={project.slug} className="web-project">
               <BrowserPreview
                 src={project.image as string}
                 alt={project.imageAlt ?? ""}

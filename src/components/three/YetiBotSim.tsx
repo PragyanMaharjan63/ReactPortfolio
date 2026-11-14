@@ -30,6 +30,7 @@ export interface YetiBotSimProps {
   url: string;
   /** Pause ticking when the viewer is paused or off-screen. */
   running?: boolean;
+  showTouchHint?: boolean;
   onState?: (state: YetiState, frame: number) => void;
   groundY?: number;
 }
@@ -42,7 +43,7 @@ function makeTapTexture(): CanvasTexture {
   const ctx = c.getContext("2d")!;
 
   ctx.clearRect(0, 0, S, S);
-  ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.strokeStyle = "rgba(40,42,44,0.85)";
   ctx.lineWidth = 5;
   ctx.setLineDash([14, 10]);
   ctx.beginPath();
@@ -50,7 +51,7 @@ function makeTapTexture(): CanvasTexture {
   ctx.stroke();
 
   ctx.setLineDash([]);
-  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.fillStyle = "rgba(40,42,44,0.95)";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = "bold 45px ui-sans-serif, system-ui, sans-serif";
@@ -66,6 +67,7 @@ function makeTapTexture(): CanvasTexture {
 export function YetiBotSim({
   url,
   running = true,
+  showTouchHint = true,
   onState,
   groundY = -0.95,
 }: YetiBotSimProps) {
@@ -270,8 +272,8 @@ export function YetiBotSim({
         <primitive object={model} />
       </group>
 
-      {/* "TAP HERE", lying flat on the crown of the head. */}
-      <group
+      {/* Keep the optional interaction hint separate from the printed geometry. */}
+      {showTouchHint && <group
         ref={pulse}
         position={[placement.head[0], placement.head[1] + 0.19, placement.head[2]]}
         onPointerDown={press}
@@ -287,7 +289,7 @@ export function YetiBotSim({
             side={DoubleSide}
           />
         </mesh>
-      </group>
+      </group>}
     </group>
   );
 }

@@ -76,7 +76,11 @@ test("YetiBot keeps its animated firmware display and touch interactions", async
   // The shell itself is the touch target, matching the physical robot.
   const bounds = await canvas.boundingBox();
   expect(bounds).not.toBeNull();
-  await canvas.click({ position: { x: bounds!.width / 2, y: bounds!.height / 2 }, clickCount: 3, delay: 60 });
+  // A visible canvas and one firmware tick can precede the first completed
+  // GPU draw. Wait for the display to advance again before timing the gesture.
+  const currentFrame = await page.getByText(/^frame \d+$/).textContent();
+  await expect.poll(async () => page.getByText(/^frame \d+$/).textContent()).not.toBe(currentFrame);
+  await canvas.click({ position: { x: bounds!.width / 2, y: bounds!.height / 2 }, clickCount: 3, delay: 40 });
   await expect(page.getByText("Menu", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Pause automatic rotation" }).click();
   await expect(page.getByRole("button", { name: "Resume automatic rotation" })).toBeVisible();

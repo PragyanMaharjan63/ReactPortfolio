@@ -12,7 +12,7 @@ export function SetupNotice({ database = false }: { database?: boolean }) {
             <div><dt className="font-mono text-accent">TURSO_DATABASE_URL</dt><dd className="mt-1 text-secondary">Your database’s libsql:// address.</dd></div>
             <div><dt className="font-mono text-accent">TURSO_AUTH_TOKEN</dt><dd className="mt-1 text-secondary">A token with read and write access.</dd></div>
           </> : <>
-            <div><dt className="font-mono text-accent">ADMIN_PASSWORD</dt><dd className="mt-1 text-secondary">A unique password, 12–256 characters.</dd></div>
+            <div><dt className="font-mono text-accent">ADMIN_PASSWORD</dt><dd className="mt-1 text-secondary">Choose your own password, 12–256 characters. This is the password you use to sign in; no login ID is needed.</dd></div>
             <div><dt className="font-mono text-accent">AUTH_SECRET</dt><dd className="mt-1 text-secondary">A random secret of at least 32 characters.</dd></div>
           </>}
         </dl>

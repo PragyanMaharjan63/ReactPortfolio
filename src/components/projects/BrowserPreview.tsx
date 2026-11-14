@@ -20,7 +20,7 @@ export function BrowserPreview({
   className?: string;
 }) {
   return (
-    <div className={cn("panel overflow-hidden", className)}>
+    <div className={cn("browser-preview panel overflow-hidden", className)}>
       <div className="flex items-center gap-2 border-b border-line px-3 py-2.5">
         <span className="flex gap-1.5" aria-hidden="true">
           <span className="size-2.5 rounded-full bg-line-strong" />

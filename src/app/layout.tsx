@@ -10,11 +10,13 @@ import "@/styles/globals.css";
 const sans = localFont({
   src: "../../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2",
   variable: "--font-manrope",
+  weight: "200 800",
   display: "swap",
 });
 const mono = localFont({
   src: "../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
   variable: "--font-jetbrains",
+  weight: "100 800",
   display: "swap",
   preload: false,
 });
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: "#101210", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#f8f8f6", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

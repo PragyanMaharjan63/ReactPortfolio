@@ -16,6 +16,7 @@ export interface SceneProps {
   rig?: RigKind;
   animate: boolean;
   allowZoom?: boolean;
+  showTouchHint?: boolean;
   /**
    * Drive the model from the firmware compiled to WASM rather than showing it
    * as a static prop. Only meaningful when a .glb is configured, since the
@@ -48,6 +49,7 @@ export function RobotScene({
   rig = "yetibot",
   animate,
   allowZoom = true,
+  showTouchHint = true,
   simulate = false,
   command = null,
   onAngles,
@@ -70,7 +72,7 @@ export function RobotScene({
           rig === "quadruped" ? (
             <QuadrupedSim url={modelUrl} command={command} onAngles={onAngles} />
           ) : (
-            <YetiBotSim url={modelUrl} running={animate} onState={onYetiState} />
+            <YetiBotSim url={modelUrl} running={animate} showTouchHint={showTouchHint} onState={onYetiState} />
           )
         ) : modelUrl ? (
           <GLTFRobot url={modelUrl} />

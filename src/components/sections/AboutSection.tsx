@@ -9,11 +9,11 @@ export function AboutSection({ standalone = false }: { standalone?: boolean }) {
       aria-labelledby="about-heading"
     >
       <div className="shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-        <SectionHeading id="about-heading" level={standalone ? 1 : 2} eyebrow="04 / Behind the work" title="Curiosity is the common thread." />
+        <SectionHeading id="about-heading" level={standalone ? 1 : 2} eyebrow="04 — About" title="Always taking things apart." />
 
         <div>
           <p className="max-w-lg text-lead text-secondary">
-            I’m a Computer Science student in Nepal, drawn to the space where software meets the physical world. I build robots, craft web applications, and enjoy figuring out how all the pieces fit together.
+            I’m a Computer Science student based in Lalitpur, Nepal. I spend my time building robots, writing software, and figuring out how to make the two work together. I like projects that leave me with something I can actually use—or pick up.
           </p>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
