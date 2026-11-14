@@ -101,11 +101,7 @@
     "description": "A walking quadruped on the Kame32 miniKame layout: four legs, two servos per leg, driven by an ESP32. The 3D view is assembled from the printed parts.",
     "model": "/models/quadruped.glb",
     "modelType": "cad-export",
-    "technologies": [
-      "ESP32",
-      "Servos",
-      "3D printing"
-    ],
+    "technologies": ["ESP32", "Servos", "3D printing"],
     "role": "To be documented.",
     "metadata": [
       {
@@ -144,12 +140,7 @@
     "description": "A note-taking app where notes are stored encrypted rather than as plain text. React front end, Express API, MongoDB.",
     "image": "/media/web/notes.png",
     "imageAlt": "The Notes app: note list and editor.",
-    "technologies": [
-      "React",
-      "Express",
-      "Node.js",
-      "MongoDB"
-    ],
+    "technologies": ["React", "Express", "Node.js", "MongoDB"],
     "role": "Sole developer.",
     "status": "Deployed",
     "links": {
@@ -168,11 +159,7 @@
     "description": "A study timer paired with a todo list, so a session and its tasks share one screen. Client-side only.",
     "image": "/media/web/studyTracker.png",
     "imageAlt": "Study Tracker: timer and todo list.",
-    "technologies": [
-      "React",
-      "JavaScript",
-      "Tailwind CSS"
-    ],
+    "technologies": ["React", "JavaScript", "Tailwind CSS"],
     "role": "Sole developer.",
     "status": "Deployed",
     "links": {
@@ -191,11 +178,7 @@
     "description": "An e-commerce storefront in plain HTML, CSS and JavaScript — layout, interaction and state all hand-written.",
     "image": "/media/web/Bakas.png",
     "imageAlt": "The BAKAS storefront product listing.",
-    "technologies": [
-      "HTML",
-      "CSS",
-      "JavaScript"
-    ],
+    "technologies": ["HTML", "CSS", "JavaScript"],
     "role": "Sole developer.",
     "status": "Deployed",
     "links": {
@@ -214,11 +197,7 @@
     "description": "A coffee shop landing page, built to practise composing a page from small reusable components.",
     "image": "/media/web/Coffee.png",
     "imageAlt": "The Cafe landing page hero.",
-    "technologies": [
-      "React",
-      "JavaScript",
-      "Tailwind CSS"
-    ],
+    "technologies": ["React", "JavaScript", "Tailwind CSS"],
     "role": "Sole developer.",
     "status": "Deployed",
     "links": {
@@ -235,19 +214,13 @@
     "featured": false,
     "summary": "Deployed TypeScript application.",
     "description": "A deployed TypeScript application. The repository carries no description, so this entry stays thin rather than invented.",
-    "technologies": [
-      "TypeScript",
-      "React"
-    ],
+    "technologies": ["TypeScript", "React"],
     "role": "Sole developer.",
     "status": "Deployed",
     "links": {
       "live": "https://career-canvas-five.vercel.app",
       "github": "https://github.com/PragyanMaharjan63/CareerCanvas"
     },
-    "missingInfo": [
-      "What it does, in one line.",
-      "A screenshot."
-    ]
+    "missingInfo": ["What it does, in one line.", "A screenshot."]
   }
 ]

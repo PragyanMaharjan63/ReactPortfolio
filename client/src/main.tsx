@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles/globals.css";
 
-hydrateRoot(document.getElementById("root") as HTMLElement,
+hydrateRoot(
+  document.getElementById("root") as HTMLElement,
   <StrictMode>
     <BrowserRouter>
       <App />
