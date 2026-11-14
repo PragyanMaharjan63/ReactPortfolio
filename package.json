@@ -4,33 +4,36 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=24.15.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack && node scripts/prepare-standalone.mjs",
-    "start": "node scripts/start.mjs",
+    "build": "next build --turbopack",
+    "start": "next start",
     "lint": "eslint .",
     "type-check": "next typegen && tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "seed": "node --import tsx scripts/seed.ts",
     "analyze": "next analyze",
-    "build:sim": "docker build -t portfolio-sim-build -f scripts/sim/Dockerfile . && docker run --rm -v \"$PWD:/work\" -u \"$(id -u):$(id -g)\" portfolio-sim-build",
+    "build:sim": "bash scripts/sim/build.sh",
     "build:models": "blender -b scripts/blender/quadruped.blend --python scripts/blender/export_rigged_glb.py -- public/models/quadruped.glb && blender -b scripts/blender/yetibot.blend --python scripts/blender/export_rigged_glb.py -- public/models/yetibot.glb"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
+    "@libsql/client": "^0.18.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "framer-motion": "^12.43.0",
+    "jose": "^6.2.17",
     "lucide-react": "^1.28.0",
     "next": "^16.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "server-only": "^0.0.1",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

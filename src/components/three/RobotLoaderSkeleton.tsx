@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 
 /** Small server-renderable poster; does not import the Three.js stack. */
 export function RobotViewerSkeleton({ poster, priority = false }: { poster?: string; priority?: boolean }) {

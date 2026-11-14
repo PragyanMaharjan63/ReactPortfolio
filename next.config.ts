@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  // Runtime data belongs to the mounted volume, never the deployment artifact.
+  // Runtime data and local secrets must stay outside deployment artifacts.
   outputFileTracingExcludes: { "/*": ["./data/**/*", "./test-results/**/*", "./.env*"] },
   poweredByHeader: false,
   compress: true,

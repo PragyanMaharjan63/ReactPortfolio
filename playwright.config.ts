@@ -21,6 +21,6 @@ export default defineConfig({
     url: "http://127.0.0.1:3100/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
-    env: { PORT: "3100", HOSTNAME: "127.0.0.1", DATABASE_PATH: "./test-results/portfolio-e2e.sqlite" },
+    env: { PORT: "3100", HOSTNAME: "127.0.0.1", DATABASE_PATH: "./test-results/portfolio-e2e.sqlite", ADMIN_PASSWORD: "test-only-dashboard-password", AUTH_SECRET: "test-only-dashboard-secret-with-at-least-32-characters", TURSO_DATABASE_URL: "", TURSO_AUTH_TOKEN: "", VERCEL: "0" },
   },
 });

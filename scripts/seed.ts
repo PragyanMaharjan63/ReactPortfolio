@@ -1,9 +1,5 @@
-import { openDatabase, readProjects, seedProjects } from "../src/lib/database";
+import { openProjectStore } from "../src/lib/storage";
 
-const db = openDatabase();
-try {
-  seedProjects(db);
-  console.log(`SQLite ready: ${readProjects(db).length} projects in ${process.env.DATABASE_PATH ?? "./data/portfolio.sqlite"}`);
-} finally {
-  db.close();
-}
+const store = await openProjectStore();
+await store.seed();
+console.log(`Seeded ${(await store.list()).length} projects in ${store.storage === "turso" ? "hosted SQLite" : process.env.DATABASE_PATH ?? "./data/portfolio.sqlite"}`);

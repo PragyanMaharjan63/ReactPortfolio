@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # Compile the ESP32 firmware to WebAssembly and compress the exported models.
 #
-# Runs inside the container from scripts/sim/Dockerfile, with the repo mounted
-# at /work. Outside the container it still works if emcc and gltf-transform are
-# on PATH.
+# Requires Emscripten (emcc) on PATH; gltf-transform optionally compresses
+# models. The committed runtime artifacts do not need rebuilding to deploy.
 set -euo pipefail
 
-ROOT="${SIM_ROOT:-/work}"
+ROOT="${SIM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 cd "$ROOT"
 
 SHIMS="scripts/sim/shims"

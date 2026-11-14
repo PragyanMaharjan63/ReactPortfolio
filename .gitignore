@@ -24,9 +24,6 @@ dist-ssr
 *.sw?
 
 .env
-# Build output
-client/dist
-server/dist
 
 # Env
 .env
@@ -36,7 +33,7 @@ server/dist
 # Next.js / SQLite / browser verification
 .next/
 out/
-data/
+/data/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
@@ -44,3 +41,5 @@ playwright-report/
 test-results/
 .env.*
 !.env.example
+
+.vercel/

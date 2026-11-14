@@ -1,0 +1,64 @@
+import { test, expect } from "@playwright/test";
+
+const password = "test-only-dashboard-password";
+
+test("dashboard protects data and supports editing, ordering, export and deletion", async ({ page, request, baseURL }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  expect((await request.get("/api/admin/projects")).status()).toBe(401);
+  expect((await request.post("/api/admin/projects", { data: {} })).status()).toBe(401);
+  expect((await request.get("/api/admin/export")).status()).toBe(401);
+  expect((await request.post("/api/admin/login", { data: { password }, headers: { Origin: "https://untrusted.example" } })).status()).toBe(403);
+  await page.goto("/dashboard");
+  await expect(page).toHaveURL("/dashboard/login");
+  await page.getByLabel("Password", { exact: true }).fill("incorrect-password");
+  await page.getByRole("button", { name: "Open dashboard" }).click();
+  await expect(page.locator(".admin-error")).toContainText("Incorrect password");
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "Open dashboard" }).click();
+  await expect(page.getByRole("heading", { name: "Your work, in your hands." })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const cookie = (await page.context().cookies()).find((cookie) => cookie.name === "portfolio_admin");
+  expect(cookie?.httpOnly).toBe(true);
+  expect(cookie?.sameSite).toBe("Strict");
+  const auth = page.context().request;
+  expect((await auth.post("/api/admin/projects", { headers: { Origin: "https://untrusted.example" }, data: {} })).status()).toBe(403);
+  expect((await auth.post("/api/admin/projects", { headers: { Origin: baseURL! }, data: { slug: "bad" } })).status()).toBe(400);
+
+  await page.getByRole("button", { name: "New project", exact: true }).click();
+  await page.getByLabel("Title", { exact: true }).fill("Dashboard browser test");
+  await page.getByLabel("URL slug", { exact: false }).fill("dashboard-browser-test");
+  await page.getByLabel("Summary", { exact: false }).fill("Created from the private dashboard.");
+  await page.getByLabel("Description", { exact: true }).fill("A temporary project used by the end-to-end dashboard tests.");
+  await page.getByLabel("Feature on the homepage", { exact: false }).check();
+  await page.getByRole("button", { name: "Save project", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Saved.");
+  const created = await auth.get("/api/projects/dashboard-browser-test");
+  expect(created.status()).toBe(200);
+  expect((await created.json()).project.featured).toBe(true);
+  const oldRecord = (await (await auth.get("/api/admin/projects")).json()).records.find((record: { project: { slug: string } }) => record.project.slug === "dashboard-browser-test");
+
+  await page.getByLabel("Title", { exact: true }).fill("Updated dashboard project");
+  await page.getByRole("button", { name: "Save project", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Saved.");
+  expect(await (await auth.get("/projects/dashboard-browser-test")).text()).toContain("Updated dashboard project");
+  expect((await auth.put("/api/admin/projects/dashboard-browser-test", { headers: { Origin: baseURL! }, data: { project: oldRecord.project, revision: oldRecord.revision } })).status()).toBe(409);
+  await page.reload();
+  await page.getByRole("button", { name: /Updated dashboard project.*web/ }).click();
+  await expect(page.getByLabel("Title", { exact: true })).toHaveValue("Updated dashboard project");
+  await page.getByRole("button", { name: "Move Updated dashboard project up", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Save project", exact: true })).toBeDisabled();
+  const reordered = (await (await auth.get("/api/admin/projects")).json()).records;
+  expect(reordered.at(-2).project.slug).toBe("dashboard-browser-test");
+  const exported = await auth.get("/api/admin/export");
+  expect(exported.headers()["content-disposition"]).toContain("portfolio-projects.json");
+  expect((await exported.json()).projects.some((project: { slug: string }) => project.slug === "dashboard-browser-test")).toBe(true);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Delete project", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Project deleted.");
+  expect((await auth.get("/api/projects/dashboard-browser-test")).status()).toBe(404);
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await expect(page).toHaveURL("/dashboard/login");
+  expect((await auth.get("/api/admin/projects")).status()).toBe(401);
+  expect(errors).toEqual([]);
+});

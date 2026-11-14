@@ -1,89 +1,107 @@
 # Pragyan Maharjan — Portfolio
 
-A Next.js App Router portfolio for robotics and full-stack engineering, with interactive 3D robots driven by their original firmware compiled to WebAssembly.
-
-Production domain: <https://maharjanpragyan.com.np>
+Next.js App Router portfolio with an owner dashboard and interactive 3D robots driven by firmware compiled to WebAssembly.
 
 ## Development
 
-Use **Node.js 24.15+** (Node 24 LTS is used by Docker and Jenkins). SQLite uses Node's built-in `node:sqlite`; no database service or native npm addon is required.
+Use **Node.js 24** (24.15+ recommended).
 
 ```bash
 npm ci
+cp .env.example .env.local
 npm run dev
-# http://localhost:3000 — Turbopack, pages, and API on one port
+# http://localhost:3000
 ```
 
-Optional environment overrides in `.env.local`:
+Next.js serves pages and API routes together. Turbopack handles development and production builds. Local development uses Node's built-in SQLite at `data/portfolio.sqlite`; the first request initializes all seven project records.
 
-```dotenv
-SITE_URL=https://maharjanpragyan.com.np
-DATABASE_PATH=./data/portfolio.sqlite
-```
+## Dashboard
 
-`DATABASE_PATH` is also read by the seed CLI when exported in the shell. The CLI does not load `.env.local` automatically.
+Visit **`/dashboard`**. Configure these private environment variables first:
 
-## Stack and layout
-
-Next.js 16 · React 19 · TypeScript · Turbopack · Tailwind CSS 4 · Framer Motion · React Three Fiber / drei / Three.js · SQLite.
-
-| Path | Purpose |
+| Variable | Purpose |
 | --- | --- |
-| `src/app/` | App Router pages, layouts, metadata, sitemap, robots and API handlers |
-| `src/views/` | Server-rendered page composition |
-| `src/components/` | Sections, motion, UI and preserved 3D robot viewers |
-| `src/lib/database.ts` | SQLite schema, initialization, queries and explicit content seed |
-| `src/lib/projects.ts` | Server-only database access; request-scoped read deduplication |
-| `src/data/projects.ts` | Initial project content and project types |
-| `public/` | Original media, compressed models, Draco decoder and WASM firmware |
-| `scripts/` | Content seeding, Blender exports and firmware compilation |
+| `ADMIN_PASSWORD` | A unique password of 12–256 characters |
+| `AUTH_SECRET` | A random secret of at least 32 characters |
+| `TURSO_DATABASE_URL` | Required on Vercel: hosted SQLite address (`libsql://...`) |
+| `TURSO_AUTH_TOKEN` | Required on Vercel: database token with read/write permission |
+| `SITE_URL` | Canonical public origin, e.g. `https://maharjanpragyan.com.np` |
+| `DATABASE_PATH` | Optional local SQLite path; ignored when Turso is configured |
 
-All existing URLs are retained: `/`, `/work`, `/about`, `/contact`, `/projects/<slug>`, `/api/projects`, `/api/projects/<slug>` and `/api/health`. Missing projects now return real 404 responses.
+Generate `AUTH_SECRET` locally:
 
-## Database
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
-The first request creates `data/portfolio.sqlite`, applies schema version 1 and inserts the initial project records in a transaction. Both HTML pages and API endpoints read SQLite at request time, including the home page, project listings, detail pages and sitemap. Builds never create or bundle a runtime database.
+The dashboard creates, edits and deletes projects, changes featured status, reorders projects, and exports a JSON backup. Editable fields include text, links, technologies, image/model references, galleries, videos, specifications, challenges and undocumented details. Galleries, videos and specifications use JSON editors with examples. Media fields accept existing public paths or HTTPS URLs; file uploading is not included. Keep existing robot slugs and model URLs to preserve their firmware simulations.
 
-Startup preserves database edits and deletions. To explicitly refresh the known projects after editing `src/data/projects.ts`:
+Changes become visible on the public site without a rebuild. Sessions use signed, expiring HttpOnly cookies, production HTTPS, same-site restrictions, and mutation origin checks. Every admin endpoint checks authentication. Failed logins are throttled through the database. Stale edits/deletions are rejected rather than overwriting another tab's changes. Changing either credential invalidates existing sessions. There is no signup or default password.
+
+Without credentials the dashboard shows setup instructions. An unconfigured Vercel deployment can preview the portfolio using seeded in-memory SQLite, but dashboard writes remain disabled until Turso is connected; no edits are silently stored in temporary function files.
+
+## Vercel deployment
+
+1. Import this repository into Vercel with the **repository root** as Root Directory.
+2. Keep the Next.js framework preset. `vercel.json` runs `npm ci` and `npm run build`; Node is pinned to the 24.x line.
+3. Create a Turso database and set `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `ADMIN_PASSWORD`, `AUTH_SECRET`, and `SITE_URL` in the project environment variables.
+4. Deploy, then visit `/api/health` and `/dashboard`.
+
+Vercel Functions do not provide persistent local SQLite files. Turso provides hosted SQLite/libSQL storage so dashboard edits survive cold starts and redeployments. The database initializes and seeds once; subsequent starts preserve edits and deletions. No paid resource, database account, or deployment is created by this repository configuration.
+
+The runtime `data/` directory is ignored with **`/data/`**, scoped to the repository root. **`src/data/` must be committed**, because it contains the initial projects, site profile and skills. An unscoped `data/` ignore rule hides those source files and causes Vercel's “Module not found” build errors.
+
+Firmware submodules are not needed to build/deploy the website: the `.wasm`, `.mjs`, models and Draco decoder in `public/` are committed. A submodule-fetch warning does not cause missing `src/data` imports.
+
+## Database and content
+
+Pages, APIs and dashboard use the same database. Without Turso, local edits persist in `DATABASE_PATH`; with Turso, local and deployed apps can use the same remote database. Use separate Turso databases for development/preview and production if changes should be isolated.
+
+Initial content lives in `src/data/projects.ts`. Normal startup never overwrites dashboard edits. To deliberately refresh those seed records:
 
 ```bash
 npm run seed
-# Or select another database:
-DATABASE_PATH=/absolute/path/portfolio.sqlite npm run seed
 ```
 
-Seeding upserts by slug without duplicates; it does not delete additional runtime records. SQLite uses WAL, a busy timeout and parameterized lookups. The schema preserves all existing project fields, including galleries, video metadata and model paths. The health endpoint returns 503 if the actual database cannot be queried.
+The seed CLI reads exported shell variables, not `.env.local` automatically. For a hosted seed, export `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` before running it. Seeding upserts known slugs without deleting extra projects. Export a dashboard backup before refreshing content. Local database backups must include SQLite's WAL or use a proper SQLite backup operation.
 
-The previous MongoDB connection was optional. This migration imports all repository project content. If the deployed MongoDB contains additional or edited records, export and reconcile those records before retiring that database; this repository contains no production credentials or live export.
+The original MongoDB was optional. Any production-only MongoDB records must be exported and reconciled separately; this repository includes the seven known projects.
 
-For production, provide a **writable persistent directory**. Docker Compose mounts `sqlite-data` at `/app/data`. Preserve the volume across deployments (`docker compose down` preserves it; `down -v` removes it). Use SQLite's backup API or stop the app before copying the database; copying only the main file while writes are active can miss its WAL. Run one app instance per local SQLite volume. An ephemeral serverless filesystem does not provide durable storage.
-
-## Production
+## Production locally
 
 ```bash
-npm run build       # optimized Turbopack production build
-npm start           # Next.js on :3000
+npm run build
+npm start
+# http://localhost:3000
 ```
+
+The repository uses the standard Next.js server and Vercel deployment configuration.
+
+## Structure
+
+| Path | Purpose |
+| --- | --- |
+| `src/app/` | Pages, metadata, sitemap and API handlers |
+| `src/app/dashboard/` | Protected owner workspace and login |
+| `src/components/dashboard/` | Project editor and login UI |
+| `src/lib/storage.ts` | Shared local SQLite / Turso project store |
+| `src/lib/database.ts` | Local SQLite initialization and seed helpers |
+| `src/lib/session.ts`, `auth.ts`, `admin-api.ts` | Session and authorization checks |
+| `src/lib/project-validation.ts` | Shared browser/server input validation |
+| `src/data/` | Version-controlled source content |
+| `public/` | Original media, models, Draco decoder and WASM firmware |
+
+Existing public URLs remain: `/`, `/work`, `/about`, `/contact`, `/projects/<slug>`, `/api/projects`, `/api/projects/<slug>`, `/api/health`.
+
+## Performance and animation
+
+Server Components, responsive optimized images, locally hosted variable fonts, prefetched links, package import optimization, revalidatable assets and the Turbopack analyzer keep the site lean. The Three.js viewer remains dynamically imported without server rendering. Its poster appears immediately while model/decoder downloads overlap loading. Dashboard-provided external images load directly in the browser; local images retain Next's AVIF/WebP optimization.
+
+Original models, lighting, shadows, antialiasing, DPR, WASM gait/touch behavior, Framer Motion transitions, reduced-motion support and WebGL fallbacks are retained.
 
 ```bash
-docker compose up --build -d
-curl --fail http://localhost:6767/api/health
-# {"status":"ok","database":"connected","engine":"sqlite",...}
+npm run analyze
 ```
-
-The multi-stage Docker image uses Next's standalone output and runs as the unprivileged `node` user. Compose retains host port **6767 → 3000**. MongoDB is no longer needed. Jenkins validates, installs, lints, type-checks, runs database tests, builds and deploys the standalone image, then verifies database health and server-rendered hero markup. Its existing image rollback is retained. No deployment is performed by changing these files.
-
-## Performance and motion
-
-- Server Components keep page composition and database code out of the browser bundle.
-- Turbopack handles development and production builds; `npm run analyze` opens Next's Turbopack bundle analyzer.
-- `next/image` provides responsive sizes and AVIF/WebP optimization, including a prioritized hero poster.
-- `next/font/local` self-hosts variable Manrope and JetBrains Mono fonts from npm packages, without network requests at build time.
-- Next links prefetch routes; route-specific titles, canonical URLs and social metadata are rendered on the server.
-- The Three.js viewer is dynamically imported with SSR disabled. The lightweight poster is rendered immediately; original model and Draco downloads overlap JavaScript loading.
-- Original GLBs, WASM, gait tables, touch gestures, display frames, orbit controls, shadows, antialiasing and DPR are retained. No visual quality settings were reduced.
-- Existing Framer Motion entrance/reveal/menu animations remain. Reduced-motion preferences are respected and a photograph remains available if WebGL fails.
-- Public assets have revalidatable cache headers; Next's fingerprinted bundles and fonts use its own immutable caching.
 
 ## Verification
 
@@ -96,17 +114,13 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Browser tests run against the **production** server on port 3100 with an isolated SQLite database. They exercise desktop/mobile navigation, metadata, all project URLs, API health and 404s, actual WASM gait execution and changing servo angles, YetiBot display frames and touch interaction, pause/reset controls, reduced motion and WebGL fallback.
+Browser tests use a production server and an isolated test database. They cover public navigation, metadata, actual firmware animations and dashboard authentication/CRUD. Remote integration still requires real Turso credentials; local store tests exercise the shared SQL and initialization rules.
 
-## Models and firmware
-
-The existing animation and simulation implementation lives in `src/components/three/` and `src/sim/`. Public asset URLs have not changed.
+## Rebuilding models and firmware
 
 ```bash
-npm run build:models  # Blender assemblies → public/models/*.glb (needs Blender)
-npm run build:sim     # firmware → public/sim/*, Draco compression (needs Docker)
+npm run build:models  # needs Blender
+npm run build:sim     # needs Emscripten; optional gltf-transform compression
 ```
 
-See [firmware build notes](scripts/sim/README.md), [Blender notes](scripts/blender/README.md), [quadruped rig](public/models/QUADRUPED_MODEL.md) and [YetiBot rig](public/models/YETIBOT_MODEL.md). Source firmware under `scripts/robotCode/` is required to rebuild simulations; committed runtime artifacts work without that toolchain.
-
-To add a project: add its typed seed record, put assets in `public/media/<slug>/`, run `npm run seed`, and visit `/projects/<slug>`. Keep assets out of `public/projects/`, which is the page route namespace. Undocumented project details stay visible in `missingInfo` instead of being invented.
+See [simulation notes](scripts/sim/README.md), [Blender notes](scripts/blender/README.md), [quadruped rig](public/models/QUADRUPED_MODEL.md) and [YetiBot rig](public/models/YETIBOT_MODEL.md). Original firmware under `scripts/robotCode/` is required only to rebuild simulations. Committed runtime assets work without that toolchain.

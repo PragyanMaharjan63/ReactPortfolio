@@ -9,8 +9,12 @@ change the firmware, rebuild, and the site changes with it.
 npm run build:sim
 ```
 
-That builds the container in `Dockerfile` and runs `build.sh` inside it with the
-repo mounted at `/work`. Outputs, all committed:
+Install Emscripten so `emcc` is on PATH. Optionally install
+`@gltf-transform/cli` for model compression. The command runs `build.sh`
+from the repository root. Original firmware must be present under
+`scripts/robotCode/`; the committed runtime artifacts work without rebuilding.
+
+Outputs, all committed:
 
 | Output | From |
 |---|---|
@@ -19,8 +23,8 @@ repo mounted at `/work`. Outputs, all committed:
 | `public/draco/*` | the decoder shipped inside `three`, so no CDN is needed |
 | `public/models/*.glb` | compressed in place (3.0 MB → 207 KB) |
 
-The toolchain stays in this container. `npm run build` and the production
-`Dockerfile` never need Emscripten, Blender or `gltf-transform`.
+The website build and Vercel deployment do not need Emscripten, Blender or
+`gltf-transform`.
 
 ---
 
