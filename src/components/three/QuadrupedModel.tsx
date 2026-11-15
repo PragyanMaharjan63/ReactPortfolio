@@ -102,7 +102,7 @@ export function QuadrupedRig() {
       {/* Controller board sitting on top — ESP32 in the real build */}
       <mesh name="controller" position={[0, 0.13, -0.06]}>
         <boxGeometry args={[0.46, 0.08, 0.3]} />
-        <meshStandardMaterial color="#12331f" roughness={0.6} />
+        <meshStandardMaterial color="#1b1f26" roughness={0.6} />
       </mesh>
 
       {LEGS.map((leg) => (

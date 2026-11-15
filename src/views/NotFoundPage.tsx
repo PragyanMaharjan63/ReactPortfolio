@@ -3,19 +3,17 @@ import { ArrowLeft } from "lucide-react";
 
 export default function NotFoundPage() {
   return (
-    <div className="section">
-      <div className="shell">
-        <p className="label">404</p>
-        <h1 className="mt-4 text-h2 text-primary">Page not found</h1>
-        <p className="mt-4 max-w-md text-secondary">
+    <div className="section relative min-h-svh overflow-hidden pt-[calc(var(--header-height)+5rem)]" data-theme="dark">
+      <div className="guides" aria-hidden="true" />
+      <div className="shell relative z-[1]">
+        <p className="label">Error / 404</p>
+        <h1 className="mt-6 text-display">Page not found</h1>
+        <p className="mt-6 max-w-md text-lead text-secondary">
           That address does not match anything on this site.
         </p>
-        <Link
-          href="/"
-          className="mt-8 inline-flex min-h-11 items-center gap-2 text-accent"
-        >
+        <Link href="/" className="btn btn-primary mt-10">
           <ArrowLeft className="size-4" aria-hidden="true" />
-          Back to home
+          <span>Back to home</span>
         </Link>
       </div>
     </div>

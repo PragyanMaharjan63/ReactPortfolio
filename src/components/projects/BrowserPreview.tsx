@@ -2,9 +2,9 @@ import { Image } from "@/components/ui/Image";
 import { cn } from "@/lib/utils";
 
 /**
- * Screenshot in a browser chrome frame. Deliberately a static image opening
- * the real site in a new tab — an iframe per project would be slow and many
- * sites refuse framing anyway.
+ * Screenshot in a minimal address-bar frame. Deliberately a static image that
+ * opens the real site in a new tab — an iframe per project would be slow and
+ * many sites refuse framing anyway.
  */
 export function BrowserPreview({
   src,
@@ -20,25 +20,17 @@ export function BrowserPreview({
   className?: string;
 }) {
   return (
-    <div className={cn("browser-preview panel overflow-hidden", className)}>
-      <div className="flex items-center gap-2 border-b border-line px-3 py-2.5">
-        <span className="flex gap-1.5" aria-hidden="true">
-          <span className="size-2.5 rounded-full bg-line-strong" />
-          <span className="size-2.5 rounded-full bg-line-strong" />
-          <span className="size-2.5 rounded-full bg-line-strong" />
-        </span>
-        {url && (
-          <span className="truncate font-mono text-[0.6875rem] text-muted">
-            {url.replace(/^https?:\/\//, "")}
-          </span>
-        )}
+    <div className={cn("web-shot", className)}>
+      <div className="web-shot-bar">
+        <span className="label truncate">{url ? url.replace(/^https?:\/\//, "").replace(/\/$/, "") : "Screenshot"}</span>
+        <span className="label shrink-0" aria-hidden="true">{url ? "● Live" : ""}</span>
       </div>
-      <div className="relative aspect-[4/3] w-full bg-surface-raised">
+      <div className="web-shot-frame">
         <Image
           src={src}
           alt={alt}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 620px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 58vw, 780px"
           priority={priority}
           className="object-cover object-top"
         />

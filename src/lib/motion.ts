@@ -1,14 +1,14 @@
 import type { Variants, Transition } from "framer-motion";
 
-/** Shared easing — controlled, no springy overshoot. */
-export const EASE: Transition["ease"] = [0.22, 1, 0.36, 1];
+/** Shared easing — expo-out, no springy overshoot. */
+export const EASE: Transition["ease"] = [0.16, 1, 0.3, 1];
 
-export const DURATION = { fast: 0.2, base: 0.4, slow: 0.6 } as const;
+export const DURATION = { fast: 0.2, base: 0.5, slow: 0.8 } as const;
 
 /** Fade + small rise. The distance is deliberately small to avoid layout shift. */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: DURATION.base, ease: EASE } },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: DURATION.slow, ease: EASE } },
 };
 
 export const fade: Variants = {
@@ -28,8 +28,3 @@ export const revealProps = {
   whileInView: "visible",
   viewport: { once: true, amount: 0.2 },
 } as const;
-
-export const mobileMenu: Variants = {
-  hidden: { opacity: 0, y: -8, transition: { duration: DURATION.fast, ease: EASE } },
-  visible: { opacity: 1, y: 0, transition: { duration: DURATION.fast, ease: EASE } },
-};

@@ -1,51 +1,129 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { ButtonLink } from "@/components/ui/Button";
+import { ButtonLink, TextLink } from "@/components/ui/Button";
 import { DotPattern } from "@/components/ui/DotPattern";
+import { RevealLines } from "@/components/ui/RevealLines";
+import { ScrambleText } from "@/components/ui/ScrambleText";
 import { RobotViewerLazy } from "@/components/three/RobotViewerLazy";
-import { fadeUp, stagger, EASE } from "@/lib/motion";
+import { EASE } from "@/lib/motion";
 import type { Project } from "@/data/projects";
 
-export function HeroSection({ project }: { project?: Project }) {
-  const reducedMotion = useReducedMotion();
+export interface HeroStat {
+  label: string;
+  value: string;
+}
+
+export function HeroSection({ project, stats }: { project?: Project; stats: HeroStat[] }) {
   return (
-    <section className="hero" aria-labelledby="hero-heading">
+    <section className="hero" data-theme="dark" aria-labelledby="hero-heading">
+      <div className="guides" aria-hidden="true" />
+      <div
+        className="dot-field"
+        aria-hidden="true"
+        style={{ maskImage: "radial-gradient(ellipse 55% 75% at 78% 50%, #000, transparent 72%)", WebkitMaskImage: "radial-gradient(ellipse 55% 75% at 78% 50%, #000, transparent 72%)" }}
+      >
+        <DotPattern className="size-full" />
+      </div>
+
       <div className="shell">
         <div className="hero-topline">
-          <span className="label">Independent portfolio <span className="hero-divider">/</span> 2026</span>
-          <span className="label">Lalitpur, Nepal <span className="hero-location-mark" aria-hidden="true">↗</span></span>
+          <span className="label">
+            <span className="status-dot status-dot-live" aria-hidden="true" />
+            <ScrambleText text="Open to robotics & full-stack work" />
+          </span>
+          <span className="label">Lalitpur, Nepal</span>
+          <span className="label">Independent portfolio / 2026</span>
         </div>
+
         <div className="hero-grid">
-          <motion.div variants={stagger(0.1)} initial="hidden" animate="visible" className="hero-copy">
-            <motion.p variants={fadeUp} className="hero-intro">Pragyan Maharjan <span>— Engineer & builder</span></motion.p>
-            <h1 id="hero-heading" className="hero-title">
-              {["Code meets", "the physical", "world."].map((line, index) => (
-                <span key={line} className={`hero-line ${index === 2 ? "hero-line-muted" : ""}`}>
-                  <motion.span initial={reducedMotion ? false : { y: "105%" }} animate={{ y: 0 }} transition={{ duration: 0.8, delay: 0.08 + index * 0.1, ease: EASE }}>{line}</motion.span>
-                </span>
-              ))}
-            </h1>
-            <motion.p variants={fadeUp} className="hero-description">I build companion robots and full-stack applications. From the printed parts to the software that brings them to life.</motion.p>
-            <motion.div variants={fadeUp} className="hero-actions">
-              <ButtonLink href="/work">Explore my work <ArrowUpRight className="size-4" aria-hidden="true" /></ButtonLink>
-              <Link href="/about" className="text-link">A little about me <ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>
+          <div className="hero-copy">
+            <motion.p
+              className="hero-intro"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: EASE }}
+            >
+              Pragyan Maharjan <span>— Engineer & builder</span>
+            </motion.p>
+            <RevealLines
+              as="h1"
+              id="hero-heading"
+              className="hero-title"
+              lines={["Code meets", "the physical", "world."]}
+              mutedLast
+            />
+            <motion.p
+              className="hero-description"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
+            >
+              I build companion robots and full-stack applications. From the printed parts to the software that brings them to life.
+            </motion.p>
+            <motion.div
+              className="hero-actions"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.55, ease: EASE }}
+            >
+              <ButtonLink href="/work" arrow>Explore my work</ButtonLink>
+              <TextLink href="/about">A little about me</TextLink>
             </motion.div>
-          </motion.div>
-          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="hero-object">
-            <DotPattern className="hero-dots" />
-            <div className="hero-object-top"><span className="label">Object 001</span><span className="label">Interactive study</span></div>
-            <span className="registration-mark registration-tl" aria-hidden="true" />
-            <span className="registration-mark registration-br" aria-hidden="true" />
-            {project && <RobotViewerLazy rig="yetibot" modelUrl={project.model} modelType={project.modelType} poster={project.image ?? "/media/yetibot/face.jpg"} posterAlt={project.imageAlt ?? "YetiBot"} description="Drag to rotate. Tap the head to interact." priority simulate showSimulationControls={false} showTouchHint={false} />}
-            <div className="hero-object-bottom"><span className="hero-object-name">{project?.title ?? "YetiBot"} <span>Companion robot</span></span><Link href="/projects/yetibot" className="hero-object-link" aria-label="Explore YetiBot"><ArrowUpRight className="size-5" aria-hidden="true" /></Link></div>
+          </div>
+
+          <motion.div
+            className="hero-plate ticks"
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.25, ease: EASE }}
+          >
+            <DotPattern className="dot-field" />
+            <div className="hero-plate-top">
+              <span className="label">Fig. 01 — Interactive</span>
+              <span className="label">Drag to rotate</span>
+            </div>
+            <div className="relative z-[1]">
+              {project && (
+                <RobotViewerLazy
+                  rig="yetibot"
+                  modelUrl={project.model}
+                  modelType={project.modelType}
+                  poster={project.image ?? "/media/yetibot/face.jpg"}
+                  posterAlt={project.imageAlt ?? "YetiBot"}
+                  description="Drag to rotate. Tap the head to interact."
+                  priority
+                  simulate
+                  showSimulationControls={false}
+                  showTouchHint={false}
+                />
+              )}
+            </div>
+            <div className="hero-plate-bottom">
+              <span className="hero-plate-name">
+                {project?.title ?? "YetiBot"} <span>Companion robot</span>
+              </span>
+              <Link href="/projects/yetibot" className="hero-plate-link" aria-label="Explore YetiBot">
+                <ArrowUpRight className="size-5" strokeWidth={1.5} aria-hidden="true" />
+              </Link>
+            </div>
           </motion.div>
         </div>
+
         <div className="hero-bottom">
-          <a href="#work" className="text-link"><ArrowDown className="size-3.5" aria-hidden="true" /> Selected work below</a>
-          <span className="label">Robotics <span className="hero-divider">/</span> Software <span className="hero-divider">/</span> Prototyping</span>
+          {stats.map((stat) => (
+            <div key={stat.label} className="hero-stat">
+              <p className="label">{stat.label}</p>
+              <strong>{stat.value}</strong>
+            </div>
+          ))}
+          <div className="flex items-end justify-end">
+            <TextLink href="#work" icon={<ArrowDown className="size-3.5" aria-hidden="true" />} className="arrow-host">
+              Selected work
+            </TextLink>
+          </div>
         </div>
       </div>
     </section>

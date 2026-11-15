@@ -1,61 +1,51 @@
 import Link from "next/link";
 import { Image } from "@/components/ui/Image";
-import { ArrowRight, Play } from "lucide-react";
+import { DotPattern } from "@/components/ui/DotPattern";
+import { ButtonLink } from "@/components/ui/Button";
+import { ProjectMetadata } from "@/components/projects/ProjectMetadata";
 import type { Project } from "@/data/projects";
-import { Badge } from "@/components/ui/Badge";
+import { pad } from "@/lib/utils";
 
-/** Compact listing card used on /work. */
-export function ProjectCard({ project }: { project: Project }) {
+/** Large plate for robotics projects on /work: image on a dot-grid plate with a datasheet below. */
+export function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const href = `/projects/${project.slug}`;
   return (
-    <article className="project-card panel group flex h-full flex-col overflow-hidden transition-colors hover:border-line-strong">
-      {project.image ? (
-        <div className="relative aspect-[16/10] w-full bg-surface-raised">
+    <article className="group" data-theme="dark">
+      <Link href={href} className="panel ticks relative block aspect-[4/3] overflow-hidden" data-cursor="View" aria-label={`Explore ${project.title}`}>
+        <DotPattern className="dot-field" />
+        <div className="absolute inset-x-4 top-3.5 z-[2] flex justify-between">
+          <span className="label">FIG. {pad(index + 1)}</span>
+          <span className="label">{project.year}</span>
+        </div>
+        {project.image ? (
           <Image
             src={project.image}
             alt={project.imageAlt ?? ""}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
-            className={project.domain === "robotics" ? "project-image object-contain p-5" : "project-image object-cover object-top"}
+            sizes="(max-width: 768px) 100vw, 640px"
+            className="object-contain p-10 transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
           />
-        </div>
-      ) : (
-        <div className="flex aspect-[16/10] w-full items-center justify-center bg-surface-raised">
-          <span className="label">No image supplied</span>
+        ) : (
+          <span className="label absolute inset-0 grid place-items-center">No image supplied</span>
+        )}
+      </Link>
+
+      <div className="mt-6 flex items-baseline justify-between gap-4">
+        <h3 className="text-h3 text-primary">{project.title}</h3>
+        <span className="label">{project.category}</span>
+      </div>
+      <p className="mt-2 max-w-md text-secondary">{project.summary}</p>
+
+      {project.metadata && (
+        <div className="mt-6">
+          <ProjectMetadata rows={project.metadata.slice(0, 4)} />
         </div>
       )}
 
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center gap-2">
-          <Badge>{project.category}</Badge>
-          <span className="label">{project.year}</span>
-        </div>
-
-        <h3 className="mt-3 text-h3 text-primary">{project.title}</h3>
-        <p className="mt-2 flex-1 text-sm text-secondary">{project.summary}</p>
-
-        {/* The robots are the thing worth clicking: their page runs the real
-            firmware, so the call to action says so and is styled to be the one
-            obvious next step. "Case study" undersold it. */}
-        {project.model ? (
-          <Link
-            href={`/projects/${project.slug}`}
-            className="btn btn-primary mt-5 w-full"
-          >
-            <Play className="size-4" aria-hidden="true" />
-            See the simulation
-          </Link>
-        ) : (
-          <Link
-            href={`/projects/${project.slug}`}
-            className="btn btn-secondary mt-5 w-full"
-          >
-            Case study
-            <ArrowRight
-              className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
-              aria-hidden="true"
-            />
-          </Link>
-        )}
+      <div className="mt-6">
+        <ButtonLink href={href} variant={project.model ? "primary" : "secondary"} arrow>
+          {project.model ? "See the simulation" : "Case study"}
+        </ButtonLink>
       </div>
     </article>
   );

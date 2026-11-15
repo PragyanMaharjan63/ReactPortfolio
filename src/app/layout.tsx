@@ -3,22 +3,22 @@ import localFont from "next/font/local";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MotionProvider } from "@/components/layout/MotionProvider";
+import { CursorFollower } from "@/components/layout/CursorFollower";
 import { site } from "@/data/site";
 import { siteUrl } from "@/lib/metadata";
 import "@/styles/globals.css";
 
 const sans = localFont({
-  src: "../../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2",
-  variable: "--font-manrope",
-  weight: "200 800",
+  src: "../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2",
+  variable: "--font-geist",
+  weight: "100 900",
   display: "swap",
 });
 const mono = localFont({
-  src: "../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
-  variable: "--font-jetbrains",
-  weight: "100 800",
+  src: "../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2",
+  variable: "--font-geist-mono",
+  weight: "100 900",
   display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: "#f8f8f6", colorScheme: "light" };
+export const viewport: Viewport = { themeColor: "#0b0d10", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -41,6 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Navbar />
           <main id="main">{children}</main>
           <Footer />
+          <CursorFollower />
         </MotionProvider>
       </body>
     </html>

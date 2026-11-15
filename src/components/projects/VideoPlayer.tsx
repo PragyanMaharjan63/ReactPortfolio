@@ -27,7 +27,7 @@ export function VideoPlayer({
 
   return (
     <figure className="m-0">
-      <div className="panel relative aspect-[4/3] w-full overflow-hidden bg-black">
+      <div className="panel ticks relative aspect-[4/3] w-full overflow-hidden bg-black">
         {/* object-contain: the source aspect ratio is unknown, and cropping
             a demo clip loses the thing being demonstrated. */}
         <video
@@ -46,16 +46,16 @@ export function VideoPlayer({
           <button
             type="button"
             onClick={start}
-            className="absolute inset-0 flex items-center justify-center bg-background/40 transition-colors hover:bg-background/25"
+            className="group absolute inset-0 flex items-center justify-center bg-black/35 transition-colors hover:bg-black/20"
             aria-label={`Play: ${label}`}
           >
-            <span className="flex size-14 items-center justify-center rounded-full border border-line-strong bg-background/80">
-              <Play className="ml-0.5 size-5" aria-hidden="true" />
+            <span className="flex size-16 items-center justify-center bg-white text-[#0b0d10] transition-colors group-hover:bg-accent group-hover:text-white">
+              <Play className="ml-0.5 size-5" fill="currentColor" aria-hidden="true" />
             </span>
           </button>
         )}
       </div>
-      <figcaption className="mt-2 text-sm text-muted">{label}</figcaption>
+      <figcaption className="label mt-2">{label}</figcaption>
     </figure>
   );
 }
