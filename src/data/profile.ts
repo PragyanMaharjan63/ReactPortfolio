@@ -35,6 +35,8 @@ export interface EducationEntry {
 }
 
 export interface Profile {
+  /** The giant word behind the robot on the landing page. Falls back to HERO_WORD. */
+  heroWord?: string;
   headline: string;
   /** Paragraphs separated by a blank line. */
   bio: string;
@@ -44,7 +46,10 @@ export interface Profile {
   education: EducationEntry[];
 }
 
+export const HERO_WORD = "YetiBot";
+
 export const defaultProfile: Profile = {
+  heroWord: HERO_WORD,
   headline: "Software Engineer",
   bio: [
     "I am a software engineer and technology entrepreneur focused on building scalable applications, intelligent automation systems, and reliable digital infrastructure.",
@@ -57,6 +62,7 @@ export const defaultProfile: Profile = {
     {
       role: "Co-Founder & CTO",
       organisation: "Avernek Technologies",
+      url: "https://avernek.com",
       start: "2026-04",
       highlights: [
         "Lead software engineering, technical architecture, and infrastructure management.",
@@ -70,6 +76,7 @@ export const defaultProfile: Profile = {
     {
       role: "Co-Founder & CTO",
       organisation: "Aafno Store",
+      url: "https://aafnostore.com",
       start: "2026-09",
       highlights: [
         "Co-develop an e-commerce SaaS platform for businesses.",

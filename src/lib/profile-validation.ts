@@ -9,6 +9,7 @@ const link = text(2048).refine((value) => {
 }, "Use a complete http:// or https:// URL.");
 
 export const profileSchema = z.object({
+  heroWord: text(16).min(1, "The landing-page word cannot be empty.").optional(),
   headline: text(160).min(1, "A headline is required."),
   bio: text(6000),
   experience: z.array(z.object({

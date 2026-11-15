@@ -1,7 +1,19 @@
-import type { CSSProperties } from "react";
-import type { Profile } from "@/data/profile";
+import type { CSSProperties, ReactNode } from "react";
+import type { ExperienceEntry, Profile } from "@/data/profile";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatMonth, formatRange, isOngoing, timeline } from "@/lib/profile-format";
+
+/** The organisation name, linked to its website when one is set. */
+function Org({ entry, className, children }: { entry: ExperienceEntry; className?: string; children?: ReactNode }) {
+  const content = children ?? entry.organisation;
+  if (!entry.url) return <span className={className}>{content}</span>;
+  return (
+    <a href={entry.url} target="_blank" rel="noopener noreferrer" className={`org-link ${className ?? ""}`}>
+      {content}
+      <span className="sr-only"> (opens in a new tab)</span>
+    </a>
+  );
+}
 
 /**
  * The current role set large, then every role as a bar on one shared month
@@ -26,14 +38,14 @@ export function ExperienceSection({ profile, tag = "03", detailed = false }: { p
               {current.role}
               <span className="now-org">
                 at{" "}
-                {current.url ? <a href={current.url} target="_blank" rel="noopener noreferrer"><em>{current.organisation}</em></a> : <em>{current.organisation}</em>}
+                <Org entry={current}><em>{current.organisation}</em></Org>
               </span>
             </h2>
             <div className="now-meta">
               <span className="label">Since {formatMonth(current.start)}</span>
               {alsoNow.map((entry) => (
                 <span key={`${entry.organisation}-${entry.start}`} className="label">
-                  Also {entry.role} — <span className="text-primary">{entry.organisation}</span>
+                  Also {entry.role} — <Org entry={entry} className="text-primary hover:text-accent" />
                 </span>
               ))}
             </div>
@@ -47,7 +59,7 @@ export function ExperienceSection({ profile, tag = "03", detailed = false }: { p
             {bars.map(({ entry, left, width }) => (
               <li key={`${entry.organisation}-${entry.start}`} className="chart-row">
                 <div className="chart-name">
-                  <span className="chart-org">{entry.organisation}</span>
+                  <Org entry={entry} className="chart-org" />
                   <span className="label">{entry.role}</span>
                 </div>
                 <div className="chart-track" aria-label={formatRange(entry)}>
@@ -79,7 +91,7 @@ export function ExperienceSection({ profile, tag = "03", detailed = false }: { p
               <li key={`${entry.organisation}-${entry.start}`} className="role">
                 <div>
                   <p className="label">{formatRange(entry)}</p>
-                  <h3>{entry.organisation}</h3>
+                  <h3><Org entry={entry} /></h3>
                   <p className="role-title">{entry.role}</p>
                 </div>
                 {entry.highlights.length > 0 && (

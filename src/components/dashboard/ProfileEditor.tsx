@@ -3,17 +3,18 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowUp, ArrowUpRight, Check, LoaderCircle, Plus, Save, Trash2 } from "lucide-react";
-import type { EducationEntry, Language, Profile } from "@/data/profile";
+import { HERO_WORD, type EducationEntry, type Language, type Profile } from "@/data/profile";
 import type { ProfileRecord } from "@/lib/storage";
 import { profileSchema } from "@/lib/profile-validation";
 
 type ExperienceDraft = { role: string; organisation: string; url: string; start: string; end: string; ongoing: boolean; highlights: string };
 type SkillDraft = { name: string; items: string };
-type Draft = { headline: string; bio: string; experience: ExperienceDraft[]; skills: SkillDraft[]; languages: Language[]; education: EducationEntry[] };
+type Draft = { heroWord: string; headline: string; bio: string; experience: ExperienceDraft[]; skills: SkillDraft[]; languages: Language[]; education: EducationEntry[] };
 
 const lines = (value: string) => value.split("\n").map((line) => line.trim()).filter(Boolean);
 
 const toDraft = (profile: Profile): Draft => ({
+  heroWord: profile.heroWord ?? HERO_WORD,
   headline: profile.headline,
   bio: profile.bio,
   experience: profile.experience.map((entry) => ({
@@ -26,6 +27,7 @@ const toDraft = (profile: Profile): Draft => ({
 });
 
 const fromDraft = (draft: Draft): Profile => ({
+  heroWord: draft.heroWord,
   headline: draft.headline,
   bio: draft.bio,
   experience: draft.experience.map((entry) => ({
@@ -121,6 +123,13 @@ export function ProfileEditor({ initialRecord }: { initialRecord: ProfileRecord 
       </div>
 
       <fieldset disabled={busy} className="admin-fields">
+        <Group title="Landing page" hint="The giant word behind the robot on the home page.">
+          <Field label="Hero word" hint="Up to 16 characters. Shown in capitals and sized to fit the screen.">
+            <input value={draft.heroWord} maxLength={16} required onChange={(event) => { setDraft({ ...draft, heroWord: event.target.value }); setMessage(""); }} placeholder={HERO_WORD} />
+          </Field>
+          <div className="admin-hero-preview" aria-hidden="true"><span>{draft.heroWord || HERO_WORD}</span></div>
+        </Group>
+
         <Group title="Introduction" hint="Shown at the top of the About page.">
           <Field label="Headline" hint="Your title, set large. Example: Software Engineer"><input value={draft.headline} maxLength={160} required onChange={(event) => { setDraft({ ...draft, headline: event.target.value }); setMessage(""); }} /></Field>
           <Field label="Bio" hint="Leave a blank line between paragraphs. The first paragraph is shown larger."><textarea rows={9} value={draft.bio} maxLength={6000} onChange={(event) => { setDraft({ ...draft, bio: event.target.value }); setMessage(""); }} /></Field>

@@ -16,6 +16,8 @@
   .admin-row { display: flex; align-items: flex-end; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-background); }
   .admin-tile-preview { display: grid; place-items: center; flex-shrink: 0; width: 2.9rem; height: 2.9rem; border: 1px solid var(--color-line-strong); font-family: var(--font-display); font-stretch: 112%; font-weight: 800; letter-spacing: -0.04em; color: var(--color-accent); }
   .admin-field input:disabled { opacity: 0.4; }
+  .admin-hero-preview { overflow: hidden; padding: 1.25rem 1rem; border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-background); text-align: center; white-space: nowrap; }
+  .admin-hero-preview span { font-family: var(--font-display); font-stretch: 112%; font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; text-transform: uppercase; color: #2e2920; }
   .admin-shell { padding-block: calc(var(--header-height) + 2.5rem) 6rem; }
   .admin-stats { display: grid; grid-template-columns: 1fr 1fr 2fr; margin-block: 2.5rem; border: 1px solid var(--color-line); border-radius: 16px; background: var(--color-surface); }
   .admin-stats > div { padding: 1.4rem 1.75rem; min-width: 0; }

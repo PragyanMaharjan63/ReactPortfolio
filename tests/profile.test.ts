@@ -39,3 +39,13 @@ test("timeline bars sit on a shared month axis", () => {
   assert.ok(avernek.left + avernek.width <= 100 && nowAt < 100);
   assert.equal(formatRange(defaultProfile.experience[0]), "Apr 2026 — Present");
 });
+
+test("the hero word is optional for older saved profiles but never empty", () => {
+  const older: Partial<typeof defaultProfile> = { ...defaultProfile };
+  delete older.heroWord;
+  assert.equal(profileSchema.safeParse(older).success, true);
+  assert.equal(profileSchema.safeParse({ ...defaultProfile, heroWord: "" }).success, false);
+  assert.equal(profileSchema.safeParse({ ...defaultProfile, heroWord: "A".repeat(17) }).success, false);
+  assert.equal(defaultProfile.experience.find((entry) => entry.organisation === "Avernek Technologies")?.url, "https://avernek.com");
+  assert.equal(defaultProfile.experience.find((entry) => entry.organisation === "Aafno Store")?.url, "https://aafnostore.com");
+});

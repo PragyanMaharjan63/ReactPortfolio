@@ -11,20 +11,26 @@ import type { Project } from "@/data/projects";
  * One word, one robot. The YetiBot stands in front of its own name with no
  * frame around it, and stays fully interactive — tap, hold, drag.
  */
-export function HeroSection({ project, tagline }: { project?: Project; tagline: string }) {
+/**
+ * Archivo's wide caps run about 0.8em per letter. Size the word so it spans
+ * roughly the viewport whatever its length, capped for very short words.
+ */
+const wordSize = (word: string) => `min(${(90 / (Math.max(word.length, 3) * 0.8)).toFixed(2)}vw, 19rem)`;
+
+export function HeroSection({ project, tagline, word }: { project?: Project; tagline: string; word: string }) {
   return (
     <section className="hero" aria-labelledby="hero-heading">
       <h1 id="hero-heading" className="sr-only">
         {site.name} — {site.role}
       </h1>
 
-      <div className="hero-word" aria-hidden="true">
+      <div className="hero-word" aria-hidden="true" style={{ fontSize: wordSize(word) }}>
         <motion.span
           initial={{ opacity: 0, y: "18%" }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: EASE }}
         >
-          YetiBot
+          {word}
         </motion.span>
       </div>
 

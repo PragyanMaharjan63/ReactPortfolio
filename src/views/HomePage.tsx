@@ -6,6 +6,7 @@ import { ToolkitSection } from "@/components/sections/ToolkitSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { getProfile, getProjects } from "@/lib/projects";
 import { isOngoing } from "@/lib/profile-format";
+import { HERO_WORD } from "@/data/profile";
 
 export default async function HomePage() {
   const [projects, profile] = await Promise.all([getProjects(), getProfile()]);
@@ -16,6 +17,7 @@ export default async function HomePage() {
       <HeroSection
         project={projects.find((project) => project.slug === "yetibot")}
         tagline={current ? `${current.role}, ${current.organisation}` : profile.headline}
+        word={profile.heroWord?.trim() || HERO_WORD}
       />
       <RoboticsSection projects={projects.filter((project) => project.domain === "robotics")} />
       <WebProjectsSection projects={projects.filter((project) => project.domain === "web")} />

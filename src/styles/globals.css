@@ -227,14 +227,20 @@
   .now-title { margin-top: 1.25rem; font-size: clamp(2.75rem, 1rem + 6vw, 7.5rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase; }
   .now-org { display: block; margin-top: 0.4em; font-size: 0.4em; font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; text-transform: none; color: var(--color-secondary); }
   .now-org em { font-style: normal; font-weight: 700; color: var(--color-accent); }
-  .now-org a:hover em { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+  /* Linked organisation names: a hairline underline that drops away on hover, then a small arrow. */
+  .org-link { background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat; transition: color 200ms ease, background-size 400ms var(--ease-out-expo); }
+  .org-link::after { content: "\2197"; display: inline-block; margin-left: 0.25em; font-size: 0.7em; vertical-align: 0.3em; opacity: 0.6; transition: transform 300ms var(--ease-out-expo), opacity 200ms ease; }
+  .org-link:hover { color: var(--color-accent); background-size: 0% 1px; background-position: right bottom; }
+  .org-link:hover::after { opacity: 1; transform: translate(0.1em, -0.1em); }
+  .now-org .org-link { background-size: 100% 2px; }
+  .now-org .org-link:hover { background-size: 0% 2px; }
   .now-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 2.5rem; margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--color-line); }
 
   .chart { margin-top: clamp(3.5rem, 7vw, 6rem); }
   .chart-row, .chart-axis { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 9.5rem; gap: 1.5rem; }
   .chart-row { align-items: center; padding-block: 1.35rem; border-top: 1px solid var(--color-line); }
   .chart-name { display: grid; gap: 0.25rem; min-width: 0; }
-  .chart-org { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+  .chart-org { justify-self: start; font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
   .chart-track { position: relative; height: 8px; }
   .chart-track::before { content: ""; position: absolute; inset-inline: 0; top: 50%; height: 1px; background: var(--color-line); }
   .chart-track::after { content: ""; position: absolute; left: var(--now); top: -1.35rem; bottom: -1.35rem; width: 1px; background: rgb(198 161 91 / 0.35); }
