@@ -111,8 +111,9 @@ export async function loadYetiSim(): Promise<YetiSim> {
   const bmpCtx = context2d(bmpCanvas, { willReadFrequently: true });
   const bmpImage = bmpCtx.createImageData(W, H);
 
-  const ON = "#8ef4ff";
-  const OFF = "#050d12";
+  const ON = "#f0b8ff";
+  const ON_RGB = [0xf0, 0xb8, 0xff] as const;
+  const OFF = "#0c0812";
 
   /** Firmware iteration granularity while catching up to the frame clock. */
   const STEP_MS = 8;
@@ -210,9 +211,9 @@ export async function loadYetiSim(): Promise<YetiSim> {
                 const bit = (bytes[y * stride + (x >> 3)] >> (7 - (x & 7))) & 1;
                 if (!bit) continue;
                 const k = (y * W + x) * 4;
-                px[k] = 0x8e;
-                px[k + 1] = 0xf4;
-                px[k + 2] = 0xff;
+                px[k] = ON_RGB[0];
+                px[k + 1] = ON_RGB[1];
+                px[k + 2] = ON_RGB[2];
                 px[k + 3] = 255;
               }
             }

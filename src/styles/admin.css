@@ -11,7 +11,7 @@
   .admin-search { display: flex; align-items: center; gap: 0.5rem; margin-block: 0.75rem 1rem; padding-inline: 0.75rem; min-height: 2.75rem; border: 1px solid var(--color-line); border-radius: 8px; color: var(--color-muted); background: var(--color-background); }
   .admin-search input { width: 100%; min-width: 0; outline: none; background: transparent; font-size: 0.75rem; color: var(--color-primary); }
   .admin-project { display: flex; align-items: center; border: 1px solid transparent; border-radius: 10px; transition: background 150ms ease, border-color 150ms ease; }
-  .admin-project.is-selected { background: rgb(0 0 0 / 0.025); border-color: rgb(0 0 0 / 0.28); }
+  .admin-project.is-selected { background: rgb(177 151 252 / 0.08); border-color: rgb(177 151 252 / 0.45); }
   .admin-project-select { padding: 0.875rem 0.75rem; text-align: left; min-width: 0; flex: 1; cursor: pointer; font-size: 0.8125rem; color: var(--color-secondary); }
   .is-selected .admin-project-select { color: var(--color-primary); }
   .admin-order { display: flex; flex-direction: column; padding-right: 0.4rem; }
@@ -36,8 +36,8 @@
   .admin-checkbox { display: flex; align-items: center; gap: 0.8rem; padding: 1rem; border: 1px solid var(--color-line); border-radius: 10px; font-size: 0.8125rem; cursor: pointer; }
   .admin-checkbox input { accent-color: var(--color-accent); width: 1.1rem; height: 1.1rem; }
   .admin-checkbox small { display: block; color: var(--color-muted); margin-top: 0.2rem; font-size: 0.6875rem; }
-  .admin-editor-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1.4rem 1.75rem; border-top: 1px solid var(--color-line); background: rgb(0 0 0 / 0.015); }
-  .admin-error { padding: 0.875rem 1rem; border: 1px solid rgb(168 50 50 / 0.2); border-radius: 8px; color: #a83232; background: rgb(168 50 50 / 0.04); font-size: 0.8125rem; }
+  .admin-editor-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1.4rem 1.75rem; border-top: 1px solid var(--color-line); background: rgb(244 241 251 / 0.02); }
+  .admin-error { padding: 0.875rem 1rem; border: 1px solid rgb(248 113 113 / 0.3); border-radius: 8px; color: #fca5a5; background: rgb(248 113 113 / 0.08); font-size: 0.8125rem; }
 }
 @media (max-width: 900px) {
   .admin-workspace { grid-template-columns: 1fr; }

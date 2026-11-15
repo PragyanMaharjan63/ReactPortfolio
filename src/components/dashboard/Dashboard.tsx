@@ -175,7 +175,7 @@ export function Dashboard({ initialRecords, storage }: { initialRecords: Project
             <div className="admin-editor-footer">
               {error && <p className="admin-error w-full whitespace-pre-line" role="alert">{error}</p>}
               {message && <p className="flex w-full items-center gap-2 text-sm text-accent" role="status"><Check className="size-4 shrink-0" aria-hidden="true" />{message}</p>}
-              {selected && <button type="button" className="btn btn-ghost text-red-700" disabled={busy} onClick={remove}><Trash2 className="size-4" aria-hidden="true" /> Delete project</button>}
+              {selected && <button type="button" className="btn btn-ghost text-red-300" disabled={busy} onClick={remove}><Trash2 className="size-4" aria-hidden="true" /> Delete project</button>}
               <div className="ml-auto flex flex-wrap gap-3">{selected && <a className="btn btn-secondary" href={`/projects/${selected.project.slug}`} target="_blank" rel="noopener noreferrer">View project <ArrowUpRight className="size-4" aria-hidden="true" /></a>}<button type="submit" className="btn btn-primary" disabled={busy || (Boolean(selected) && !dirty)}>{busy ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />} Save project</button></div>
             </div>
           </form>

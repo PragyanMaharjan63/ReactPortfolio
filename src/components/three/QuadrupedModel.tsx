@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import type { Group } from "three";
+import { ROBOT_GLOW } from "./palette";
 
 /**
  * Quadruped joint rig, on the miniKame / Kame32 layout: four legs, two servos
@@ -38,7 +39,7 @@ const LEGS: { id: LegId; x: number; z: number; dir: 1 | -1 }[] = [
 
 const BODY = "#d8dde4";
 const JOINT = "#1b2029";
-const ACCENT = "#65e6ff";
+const ACCENT = ROBOT_GLOW;
 
 function Leg({ x, z, dir, id }: { x: number; z: number; dir: 1 | -1; id: LegId }) {
   const hip = useRef<Group>(null);

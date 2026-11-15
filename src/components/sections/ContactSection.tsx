@@ -28,6 +28,7 @@ export function ContactSection({ standalone = false }: { standalone?: boolean })
             id="contact-heading"
             className="contact-title"
             lines={standalone ? ["Get in", "touch"] : ["Let’s", "talk."]}
+            mutedLast
           />
           <div className="contact-side">
             <Reveal delay={0.2}>

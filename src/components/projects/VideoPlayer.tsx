@@ -49,7 +49,7 @@ export function VideoPlayer({
             className="group absolute inset-0 flex items-center justify-center bg-black/35 transition-colors hover:bg-black/20"
             aria-label={`Play: ${label}`}
           >
-            <span className="flex size-16 items-center justify-center bg-white text-[#0b0d10] transition-colors group-hover:bg-accent group-hover:text-white">
+            <span className="flex size-16 items-center justify-center rounded-full bg-white text-on-accent shadow-lg transition-colors group-hover:bg-accent">
               <Play className="ml-0.5 size-5" fill="currentColor" aria-hidden="true" />
             </span>
           </button>
