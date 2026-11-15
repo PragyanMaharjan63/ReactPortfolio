@@ -5,7 +5,6 @@ import { GitHubIcon } from "@/components/ui/icons";
 import type { Project } from "@/data/projects";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowSwap } from "@/components/ui/Button";
-import { DotPattern } from "@/components/ui/DotPattern";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -35,14 +34,6 @@ export default function ProjectPage({ project, next }: { project: Project; next?
   return (
     <article>
       <header className="case-hero" data-theme="dark">
-        <div className="guides" aria-hidden="true" />
-        <div
-          className="dot-field"
-          aria-hidden="true"
-          style={{ maskImage: "radial-gradient(ellipse 50% 80% at 85% 40%, #000, transparent 70%)", WebkitMaskImage: "radial-gradient(ellipse 50% 80% at 85% 40%, #000, transparent 70%)" }}
-        >
-          <DotPattern className="size-full" />
-        </div>
         <div className="shell">
           <Link href="/work" className="text-link arrow-host">
             <ArrowLeft className="size-4" aria-hidden="true" />
@@ -178,7 +169,7 @@ export default function ProjectPage({ project, next }: { project: Project; next?
 
           {/* Gaps stay visible rather than being quietly omitted. */}
           {project.missingInfo && project.missingInfo.length > 0 && (
-            <section aria-labelledby="missing-heading" className="panel ticks p-5">
+            <section aria-labelledby="missing-heading" className="panel p-5">
               <h2 id="missing-heading" className="label text-primary">Undocumented</h2>
               <ul className="mt-3 space-y-2">
                 {project.missingInfo.map((m) => (
@@ -193,7 +184,7 @@ export default function ProjectPage({ project, next }: { project: Project; next?
       </div>
 
       {next && (
-        <Link href={`/projects/${next.slug}`} className="next-project arrow-host" data-theme="dark" data-cursor="Next">
+        <Link href={`/projects/${next.slug}`} className="next-project arrow-host" data-theme="dark">
           <div className="shell next-project-row">
             <div className="min-w-0">
               <p className="label">Next project — {next.category}</p>

@@ -18,7 +18,6 @@ import {
   type Recording,
   type RigInfo,
 } from "@/sim/gait";
-import { tintAccentMaterials } from "./palette";
 
 /**
  * The printed quadruped, driven by its own firmware.
@@ -66,10 +65,7 @@ export function QuadrupedSim({
 
   // One instance per mount, so two viewers on a page cannot fight over the
   // shared GLTF cache entry.
-  const model = useMemo(() => {
-    tintAccentMaterials(scene);
-    return scene.clone(true);
-  }, [scene]);
+  const model = useMemo(() => scene.clone(true), [scene]);
 
   // Held in a ref, not memoised state: these Object3Ds are written to on every
   // frame, which is exactly what a render-derived value must not be.

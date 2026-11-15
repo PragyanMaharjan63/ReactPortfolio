@@ -15,7 +15,6 @@ import {
   Vector3,
   type Object3D,
 } from "three";
-import { tintAccentMaterials } from "./palette";
 import { loadYetiSim, type YetiSim, type YetiState } from "@/sim/yeti";
 
 /**
@@ -76,10 +75,7 @@ export function YetiBotSim({
   const invalidate = useThree((s) => s.invalidate);
   const [sim, setSim] = useState<YetiSim | null>(null);
 
-  const model = useMemo(() => {
-    tintAccentMaterials(scene);
-    return scene.clone(true);
-  }, [scene]);
+  const model = useMemo(() => scene.clone(true), [scene]);
   const [tapTexture] = useState(makeTapTexture);
 
   // Drop the model so it rests on the shadow plane, and find the crown of the

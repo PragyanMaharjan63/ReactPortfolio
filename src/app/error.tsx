@@ -3,7 +3,6 @@
 export default function ErrorPage({ reset }: { reset: () => void }) {
   return (
     <div className="section relative min-h-svh pt-[calc(var(--header-height)+5rem)]" data-theme="dark">
-      <div className="guides" aria-hidden="true" />
       <div className="shell relative z-[1]">
         <p className="label">A small interruption</p>
         <h1 className="mt-6 text-display">Something went wrong.</h1>

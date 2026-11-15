@@ -1,0 +1,41 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createProjectStore, localConnection } from "../src/lib/storage";
+import { defaultProfile } from "../src/data/profile";
+import { profileSchema } from "../src/lib/profile-validation";
+import { formatRange, timeline } from "../src/lib/profile-format";
+
+test("the profile starts from the defaults and saves with revision checks", async () => {
+  const local = localConnection(":memory:");
+  const store = createProjectStore(local.connection);
+  try {
+    const first = await store.getProfile();
+    assert.deepEqual(first.profile, defaultProfile);
+    const edited = { ...first.profile, headline: "Edited headline" };
+    await store.saveProfile(edited, first.revision);
+    const second = await store.getProfile();
+    assert.equal(second.profile.headline, "Edited headline");
+    assert.notEqual(second.revision, first.revision);
+    await assert.rejects(store.saveProfile(first.profile, first.revision), /another tab/);
+    await store.saveProfile({ ...edited, headline: "Again" }, second.revision);
+    assert.equal((await store.getProfile()).profile.headline, "Again");
+  } finally { local.close(); }
+});
+
+test("profile validation accepts the defaults and rejects bad dates", () => {
+  assert.equal(profileSchema.safeParse(defaultProfile).success, true);
+  const backwards = { ...defaultProfile, experience: [{ ...defaultProfile.experience[2], start: "2026-07", end: "2025-11" }] };
+  assert.equal(profileSchema.safeParse(backwards).success, false);
+  const badMonth = { ...defaultProfile, experience: [{ ...defaultProfile.experience[0], start: "April 2026" }] };
+  assert.equal(profileSchema.safeParse(badMonth).success, false);
+});
+
+test("timeline bars sit on a shared month axis", () => {
+  const now = 2026 * 12 + 10; // Nov 2026
+  const { bars, nowAt } = timeline(defaultProfile.experience, now);
+  const club = bars.find((bar) => bar.entry.organisation === "Smaterr Roboticz Club")!;
+  const avernek = bars.find((bar) => bar.entry.organisation === "Avernek Technologies")!;
+  assert.ok(club.left < avernek.left);
+  assert.ok(avernek.left + avernek.width <= 100 && nowAt < 100);
+  assert.equal(formatRange(defaultProfile.experience[0]), "Apr 2026 — Present");
+});

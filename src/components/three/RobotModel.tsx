@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { DRACO_PATH } from "@/sim/wasm";
-import { ROBOT_ACCENT, ROBOT_GLOW, tintAccentMaterials } from "./palette";
 import type { Group } from "three";
 
 /**
@@ -16,13 +15,12 @@ export function GLTFRobot({ url }: { url: string }) {
   // decoder path drei reaches for a Google CDN, which fails silently into the
   // poster fallback. That is what broke the model on the landing page.
   const { scene } = useGLTF(url, DRACO_PATH);
-  tintAccentMaterials(scene);
   return <primitive object={scene} />;
 }
 
 /**
  * Procedural stand-in for YetiBot, modelled from the project's own photographs:
- * a white 3D-printed shell, an accent-coloured printed bezel, and a dark inset display.
+ * a white 3D-printed shell, a blue printed bezel, and a dark inset display.
  *
  * This is explicitly a *visual reconstruction* — proportions are approximate
  * and it carries no dimensional authority. The UI labels it as such. Replace
@@ -70,7 +68,7 @@ export function ReconstructedYetiBot({ animate }: { animate: boolean }) {
           radius — any wider and they break the silhouette when rotated. */}
       <mesh position={[0, 0.16, 0.76]}>
         <boxGeometry args={[0.9, 0.62, 0.12]} />
-        <meshStandardMaterial color={ROBOT_ACCENT} roughness={0.45} metalness={0.06} />
+        <meshStandardMaterial color="#2438c8" roughness={0.45} metalness={0.06} />
       </mesh>
 
       {/* Screen, inset into the bezel */}
@@ -84,8 +82,8 @@ export function ReconstructedYetiBot({ animate }: { animate: boolean }) {
         <mesh key={x} position={[x, 0.21, 0.843]}>
           <boxGeometry args={[0.13, 0.13, 0.01]} />
           <meshStandardMaterial
-            color={ROBOT_GLOW}
-            emissive={ROBOT_GLOW}
+            color="#eef3ff"
+            emissive="#eef3ff"
             emissiveIntensity={1.6}
             toneMapped={false}
           />
@@ -94,8 +92,8 @@ export function ReconstructedYetiBot({ animate }: { animate: boolean }) {
       <mesh position={[0, 0.1, 0.843]}>
         <boxGeometry args={[0.11, 0.032, 0.01]} />
         <meshStandardMaterial
-          color={ROBOT_GLOW}
-          emissive={ROBOT_GLOW}
+          color="#eef3ff"
+          emissive="#eef3ff"
           emissiveIntensity={1.4}
           toneMapped={false}
         />

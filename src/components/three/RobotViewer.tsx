@@ -64,6 +64,8 @@ export interface RobotViewerProps {
   showSimulationControls?: boolean;
   showTouchHint?: boolean;
   priority?: boolean;
+  /** Frameless: no panel, no zoom, no control buttons. The model stands free on the page. */
+  bare?: boolean;
 }
 
 export default function RobotViewer({
@@ -77,6 +79,7 @@ export default function RobotViewer({
   showSimulationControls = true,
   showTouchHint = true,
   priority = false,
+  bare = false,
 }: RobotViewerProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -175,7 +178,7 @@ export default function RobotViewer({
     <figure className="m-0">
       <div
         ref={hostRef}
-        className="panel relative aspect-square w-full overflow-hidden"
+        className={bare ? "relative aspect-square w-full" : "panel relative aspect-square w-full overflow-hidden"}
       >
         {inView ? (
           <ViewerErrorBoundary fallback={fallback}>
@@ -200,7 +203,7 @@ export default function RobotViewer({
                 modelUrl={modelUrl}
                 rig={rig}
                 animate={playing && !reducedMotion}
-                allowZoom
+                allowZoom={!bare}
                 showTouchHint={showTouchHint}
                 simulate={simulating}
                 command={command}
@@ -229,7 +232,7 @@ export default function RobotViewer({
           />
         )}
 
-        {inView && (
+        {inView && !bare && (
           <ViewerControls
             playing={playing}
             onToggle={() => setPlaying((p) => !p)}
@@ -257,7 +260,7 @@ export default function RobotViewer({
         />
       )}
 
-      <figcaption className="mt-3 space-y-1">
+      <figcaption className={bare ? "sr-only" : "mt-3 space-y-1"}>
         <p className="text-sm text-secondary">{description}</p>
         {modelType === "visual-reconstruction" && (
           <p className="label">

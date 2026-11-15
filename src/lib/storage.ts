@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { createClient } from "@libsql/client/web";
 import { openDatabase } from "./database";
 import { projects as initialProjects, type Project } from "../data/projects";
+import { defaultProfile, type Profile } from "../data/profile";
 
 type Statement = { sql: string; args?: (string | number | null)[] };
 type Result = { rows: Record<string, unknown>[]; rowsAffected: number };
@@ -12,6 +13,7 @@ export interface SqlConnection {
 }
 
 export type ProjectRecord = { project: Project; position: number; revision: string };
+export type ProfileRecord = { profile: Profile; revision: string };
 export class StoreError extends Error {
   constructor(message: string, public status = 400) { super(message); }
 }
@@ -31,6 +33,12 @@ const projectTable = `CREATE TABLE IF NOT EXISTS projects (
 const attemptsTable = `CREATE TABLE IF NOT EXISTS admin_login_attempts (
   key TEXT PRIMARY KEY, failures INTEGER NOT NULL, retry_after INTEGER NOT NULL
 ) STRICT`;
+/** One row: the profile document. Absent until the first dashboard save, so code defaults apply until then. */
+const profileTable = `CREATE TABLE IF NOT EXISTS profile (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  document TEXT NOT NULL CHECK (json_valid(document)),
+  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+) STRICT`;
 
 /** Remote initialization is atomic and seeds once, preserving later edits/deletions. */
 export async function initializeRemote(sql: SqlConnection) {
@@ -38,6 +46,7 @@ export async function initializeRemote(sql: SqlConnection) {
     { sql: projectTable },
     { sql: "CREATE TABLE IF NOT EXISTS portfolio_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)" },
     { sql: attemptsTable },
+    { sql: profileTable },
     ...initialProjects.map((project, index) => ({
       sql: "INSERT INTO projects (slug, position, document) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM portfolio_meta WHERE key = 'initialized') ON CONFLICT(slug) DO NOTHING",
       args: [project.slug, index, JSON.stringify(project)],
@@ -88,6 +97,23 @@ export function createProjectStore(sql: SqlConnection, storage: "local" | "turso
       if (slugs.length !== current.length || new Set(slugs).size !== slugs.length || current.some((slug) => !slugs.includes(slug))) throw new StoreError("The project list changed. Reload before reordering.", 409);
       await sql.batch(slugs.map((slug, position) => ({ sql: "UPDATE projects SET position = ? WHERE slug = ?", args: [position, slug] })));
     },
+    async getProfile(): Promise<ProfileRecord> {
+      const row = (await execute("SELECT document FROM profile WHERE id = 1")).rows[0];
+      const document = row ? String(row.document) : JSON.stringify(defaultProfile);
+      return { profile: JSON.parse(document) as Profile, revision: revision(document) };
+    },
+    async saveProfile(profile: Profile, expectedRevision: string) {
+      assertWritable();
+      const row = (await execute("SELECT document FROM profile WHERE id = 1")).rows[0];
+      const current = row ? String(row.document) : JSON.stringify(defaultProfile);
+      const stale = new StoreError("Your profile changed in another tab. Reload before saving.", 409);
+      if (revision(current) !== expectedRevision) throw stale;
+      const next = JSON.stringify(profile);
+      const result = row
+        ? await execute("UPDATE profile SET document = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = 1 AND document = ?", [next, current])
+        : await execute("INSERT INTO profile (id, document) VALUES (1, ?) ON CONFLICT(id) DO NOTHING", [next]);
+      if (!result.rowsAffected) throw stale;
+    },
     async ping() { await execute("SELECT 1"); },
     async loginBlocked(key: string) {
       const row = (await execute("SELECT failures, retry_after FROM admin_login_attempts WHERE key = ?", [key])).rows[0];
@@ -116,6 +142,7 @@ export type ProjectStore = ReturnType<typeof createProjectStore>;
 export function localConnection(filename: string) {
   const db = openDatabase(filename);
   db.exec(attemptsTable);
+  db.exec(profileTable);
   function execute({ sql, args = [] }: Statement): Result {
     const statement = db.prepare(sql);
     if (/^\s*(SELECT|PRAGMA)\b/i.test(sql)) return { rows: statement.all(...args), rowsAffected: 0 };

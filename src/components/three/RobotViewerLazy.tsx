@@ -30,7 +30,7 @@ export function RobotViewerLazy(props: RobotViewerProps) {
 
   return (
     <div className="viewer-boundary">
-      <div className="viewer-placeholder"><RobotViewerSkeleton poster={props.poster} priority={props.priority} /></div>
+      <div className="viewer-placeholder"><RobotViewerSkeleton poster={props.poster} priority={props.priority} bare={props.bare} /></div>
       <div className="viewer-content"><RobotViewer {...props} /></div>
     </div>
   );

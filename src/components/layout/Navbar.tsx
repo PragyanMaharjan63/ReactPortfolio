@@ -128,10 +128,7 @@ export function Navbar() {
           <svg className="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
             <path d="M4 25V7h7a5 5 0 0 1 0 10H4M17 25V7l5 9 6-9v18" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="miter" />
           </svg>
-          <span>
-            {site.name}
-            <span className="brand-subtitle">Robotics & software</span>
-          </span>
+          <span>{site.name}</span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -157,7 +154,7 @@ export function Navbar() {
               );
             })}
             <li className="ml-3">
-              <Link href={contact.href} aria-current={activeFor(contact)} className="btn btn-primary btn-sm">
+              <Link href={contact.href} aria-current={activeFor(contact)} className="btn btn-secondary btn-sm">
                 <span>{contact.label}</span>
                 <ArrowSwap />
               </Link>

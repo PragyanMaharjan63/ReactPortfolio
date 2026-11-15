@@ -8,5 +8,5 @@ export default async function DashboardPage() {
   if (!await isAdmin()) redirect("/dashboard/login");
   const store = await getDatabase();
   if (store.storage === "preview") return <SetupNotice database />;
-  return <Dashboard initialRecords={await store.list()} storage={store.storage} />;
+  return <Dashboard initialRecords={await store.list()} storage={store.storage} profile={await store.getProfile()} />;
 }

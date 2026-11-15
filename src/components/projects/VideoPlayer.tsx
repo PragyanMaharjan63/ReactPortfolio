@@ -27,7 +27,7 @@ export function VideoPlayer({
 
   return (
     <figure className="m-0">
-      <div className="panel ticks relative aspect-[4/3] w-full overflow-hidden bg-black">
+      <div className="panel relative aspect-[4/3] w-full overflow-hidden bg-black">
         {/* object-contain: the source aspect ratio is unknown, and cropping
             a demo clip loses the thing being demonstrated. */}
         <video

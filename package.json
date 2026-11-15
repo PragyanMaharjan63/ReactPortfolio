@@ -20,6 +20,7 @@
     "build:models": "blender -b scripts/blender/quadruped.blend --python scripts/blender/export_rigged_glb.py -- public/models/quadruped.glb && blender -b scripts/blender/yetibot.blend --python scripts/blender/export_rigged_glb.py -- public/models/yetibot.glb"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@libsql/client": "^0.18.0",

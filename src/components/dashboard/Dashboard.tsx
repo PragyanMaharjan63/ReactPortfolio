@@ -4,7 +4,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowUp, ArrowUpRight, Check, Download, LoaderCircle, LogOut, Plus, RefreshCw, Save, Search, Star, Trash2 } from "lucide-react";
 import type { Project } from "@/data/projects";
-import type { ProjectRecord } from "@/lib/storage";
+import type { ProfileRecord, ProjectRecord } from "@/lib/storage";
+import { ProfileEditor } from "./ProfileEditor";
 import { projectSchema } from "@/lib/project-validation";
 
 const blank: Project = { slug: "", title: "", category: "Frontend", year: String(new Date().getFullYear()), summary: "", description: "", featured: false, domain: "web", technologies: [], role: "Sole developer.", links: {} };
@@ -19,8 +20,9 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   return <label className="admin-field"><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
 }
 
-export function Dashboard({ initialRecords, storage }: { initialRecords: ProjectRecord[]; storage: string }) {
+export function Dashboard({ initialRecords, storage, profile }: { initialRecords: ProjectRecord[]; storage: string; profile: ProfileRecord }) {
   const router = useRouter();
+  const [view, setView] = useState<"projects" | "profile">("projects");
   const [records, setRecords] = useState(initialRecords);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialRecords[0]?.project.slug ?? null);
   const [draft, setDraft] = useState(() => toDraft(initialRecords[0]?.project ?? blank));
@@ -117,6 +119,15 @@ export function Dashboard({ initialRecords, storage }: { initialRecords: Project
         </div>
       </div>
 
+      <div className="admin-views" role="tablist" aria-label="Dashboard sections">
+        {(["projects", "profile"] as const).map((value) => (
+          <button key={value} type="button" role="tab" aria-selected={view === value} onClick={() => setView(value)}>{value === "projects" ? "Projects" : "Profile"}</button>
+        ))}
+      </div>
+
+      <div hidden={view !== "profile"} className="mt-6"><ProfileEditor initialRecord={profile} /></div>
+
+      <div hidden={view !== "projects"}>
       <div className="admin-stats">
         <div><span className="label">Projects</span><strong>{records.length.toString().padStart(2, "0")}</strong></div>
         <div><span className="label">Featured</span><strong>{records.filter((record) => record.project.featured).length.toString().padStart(2, "0")}</strong></div>
@@ -180,6 +191,7 @@ export function Dashboard({ initialRecords, storage }: { initialRecords: Project
             </div>
           </form>
         </section>
+      </div>
       </div>
     </div>
   );

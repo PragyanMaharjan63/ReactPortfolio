@@ -111,9 +111,9 @@ export async function loadYetiSim(): Promise<YetiSim> {
   const bmpCtx = context2d(bmpCanvas, { willReadFrequently: true });
   const bmpImage = bmpCtx.createImageData(W, H);
 
-  const ON = "#f0b8ff";
-  const ON_RGB = [0xf0, 0xb8, 0xff] as const;
-  const OFF = "#0c0812";
+  const ON = "#eef3ff";
+  const ON_RGB = [0xee, 0xf3, 0xff] as const;
+  const OFF = "#05070b";
 
   /** Firmware iteration granularity while catching up to the frame clock. */
   const STEP_MS = 8;

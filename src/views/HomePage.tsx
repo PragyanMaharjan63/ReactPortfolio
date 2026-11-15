@@ -1,30 +1,26 @@
 import { HeroSection } from "@/components/sections/HeroSection";
-import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { RoboticsSection } from "@/components/sections/RoboticsSection";
 import { WebProjectsSection } from "@/components/sections/WebProjectsSection";
-import { AboutSection } from "@/components/sections/AboutSection";
+import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { ToolkitSection } from "@/components/sections/ToolkitSection";
 import { ContactSection } from "@/components/sections/ContactSection";
-import { getProjects } from "@/lib/projects";
-import { pad } from "@/lib/utils";
+import { getProfile, getProjects } from "@/lib/projects";
+import { isOngoing } from "@/lib/profile-format";
 
 export default async function HomePage() {
-  const projects = await getProjects();
-  const robots = projects.filter((project) => project.domain === "robotics");
-  const deployed = projects.filter((project) => project.status === "Deployed");
-  // Counts come straight from the project records — nothing here is typed by hand.
-  const stats = [
-    { label: "Projects", value: pad(projects.length) },
-    { label: "Robots built", value: pad(robots.length) },
-    { label: "Deployed", value: pad(deployed.length) },
-  ];
+  const [projects, profile] = await Promise.all([getProjects(), getProfile()]);
+  const current = profile.experience.find(isOngoing);
 
   return (
     <>
-      <HeroSection project={projects.find((project) => project.slug === "yetibot")} stats={stats} />
-      <FeaturedProjects projects={projects.filter((project) => project.featured)} />
-      <RoboticsSection projects={robots} />
+      <HeroSection
+        project={projects.find((project) => project.slug === "yetibot")}
+        tagline={current ? `${current.role}, ${current.organisation}` : profile.headline}
+      />
+      <RoboticsSection projects={projects.filter((project) => project.domain === "robotics")} />
       <WebProjectsSection projects={projects.filter((project) => project.domain === "web")} />
-      <AboutSection />
+      <ExperienceSection profile={profile} tag="03" />
+      <ToolkitSection profile={profile} tag="04" />
       <ContactSection />
     </>
   );
