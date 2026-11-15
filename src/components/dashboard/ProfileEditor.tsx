@@ -32,7 +32,8 @@ const fromDraft = (draft: Draft): Profile => ({
   bio: draft.bio,
   experience: draft.experience.map((entry) => ({
     role: entry.role, organisation: entry.organisation, start: entry.start,
-    ...(entry.url.trim() ? { url: entry.url.trim() } : {}),
+    // Always saved, even when empty: "" means "no link", so defaults never refill it.
+    url: entry.url.trim(),
     ...(!entry.ongoing && entry.end ? { end: entry.end } : {}),
     highlights: lines(entry.highlights),
   })),

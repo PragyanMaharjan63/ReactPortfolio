@@ -6,6 +6,7 @@
 export interface ExperienceEntry {
   role: string;
   organisation: string;
+  /** Absent: never set, so a known default may fill it. Empty string: deliberately no link. */
   url?: string;
   /** "YYYY-MM" */
   start: string;
@@ -113,3 +114,20 @@ export const defaultProfile: Profile = {
     { school: "United Academy", field: "Computer Science", start: "2022", end: "2024" },
   ],
 };
+
+/**
+ * Fills fields that a saved profile predates. A role saved before it had a
+ * website gets the default for the same organisation; a role whose website
+ * was deliberately cleared (saved as "") is left alone.
+ */
+export function withDefaults(profile: Profile): Profile {
+  const knownUrls = new Map(defaultProfile.experience.filter((entry) => entry.url).map((entry) => [entry.organisation.toLowerCase(), entry.url!]));
+  return {
+    ...profile,
+    experience: profile.experience.map((entry) => {
+      if (entry.url !== undefined) return entry;
+      const url = knownUrls.get(entry.organisation.trim().toLowerCase());
+      return url ? { ...entry, url } : entry;
+    }),
+  };
+}

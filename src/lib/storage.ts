@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { createClient } from "@libsql/client/web";
 import { openDatabase } from "./database";
 import { projects as initialProjects, type Project } from "../data/projects";
-import { defaultProfile, type Profile } from "../data/profile";
+import { defaultProfile, withDefaults, type Profile } from "../data/profile";
 
 type Statement = { sql: string; args?: (string | number | null)[] };
 type Result = { rows: Record<string, unknown>[]; rowsAffected: number };
@@ -100,7 +100,7 @@ export function createProjectStore(sql: SqlConnection, storage: "local" | "turso
     async getProfile(): Promise<ProfileRecord> {
       const row = (await execute("SELECT document FROM profile WHERE id = 1")).rows[0];
       const document = row ? String(row.document) : JSON.stringify(defaultProfile);
-      return { profile: JSON.parse(document) as Profile, revision: revision(document) };
+      return { profile: withDefaults(JSON.parse(document) as Profile), revision: revision(document) };
     },
     async saveProfile(profile: Profile, expectedRevision: string) {
       assertWritable();

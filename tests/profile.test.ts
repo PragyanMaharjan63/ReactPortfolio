@@ -49,3 +49,24 @@ test("the hero word is optional for older saved profiles but never empty", () =>
   assert.equal(defaultProfile.experience.find((entry) => entry.organisation === "Avernek Technologies")?.url, "https://avernek.com");
   assert.equal(defaultProfile.experience.find((entry) => entry.organisation === "Aafno Store")?.url, "https://aafnostore.com");
 });
+
+test("a profile saved before websites existed gets them filled; a cleared website stays cleared", async () => {
+  const local = localConnection(":memory:");
+  const store = createProjectStore(local.connection);
+  try {
+    const first = await store.getProfile();
+    // Exactly what the live database held: roles saved with no url key at all.
+    const legacy = { ...first.profile, experience: first.profile.experience.map((entry) => { const copy = { ...entry }; delete copy.url; return copy; }) };
+    await store.saveProfile(legacy, first.revision);
+    const filled = await store.getProfile();
+    const url = (name: string) => filled.profile.experience.find((entry) => entry.organisation === name)?.url;
+    assert.equal(url("Avernek Technologies"), "https://avernek.com");
+    assert.equal(url("Aafno Store"), "https://aafnostore.com");
+    assert.equal(url("Smaterr Roboticz Club"), undefined);
+
+    // Clearing the field in the dashboard saves "", which must not be refilled.
+    const cleared = { ...filled.profile, experience: filled.profile.experience.map((entry) => entry.organisation === "Aafno Store" ? { ...entry, url: "" } : entry) };
+    await store.saveProfile(cleared, filled.revision);
+    assert.equal((await store.getProfile()).profile.experience.find((entry) => entry.organisation === "Aafno Store")?.url, "");
+  } finally { local.close(); }
+});
